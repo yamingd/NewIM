@@ -1,0 +1,11 @@
+websocket:
+ ip: 127.0.0.1
+ actors: 10
+ workers: 10
+ port: 8080
+
+exchange:
+ ip: 127.0.0.1
+ actors: 10
+ workers: 10
+ port: 8081
