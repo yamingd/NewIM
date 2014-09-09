@@ -1,5 +1,6 @@
-package com.whosbean.gateway.connection;
+package com.whosbean.newim.gateway.connection;
 
+import com.whosbean.newim.gateway.GatewayServerNode;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -23,7 +24,8 @@ public class ChannelsHolder {
     public static void add(final Channel c){
         Channel exists = mapping.putIfAbsent(c.hashCode(), c);
         if (exists == null){
-            //TODO:new one then add it into Zookeeper
+            //new one then add it into Zookeeper
+            GatewayServerNode.current.addConnection(c);
         }
     }
 
@@ -37,7 +39,8 @@ public class ChannelsHolder {
     public static boolean remove(final Channel c){
         boolean flag = mapping.remove(c.hashCode()) != null;
         if (flag){
-            //TODO:remove it from zookeeper too.
+            //remConnection it from zookeeper too.
+            GatewayServerNode.current.remConnection(c);
         }
         return flag;
     }

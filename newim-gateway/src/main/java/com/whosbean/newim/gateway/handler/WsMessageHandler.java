@@ -1,6 +1,11 @@
-package com.whosbean.gateway.handler;
+package com.whosbean.newim.gateway.handler;
 
-import com.whosbean.gateway.connection.ChannelsHolder;
+import com.whosbean.newim.gateway.GatewayServerNode;
+import com.whosbean.newim.gateway.connection.ChannelsHolder;
+import com.whosbean.newim.gateway.connection.WebSession;
+import com.whosbean.newim.common.MessageUtil;
+import com.whosbean.newim.entity.ChatMessage;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -12,6 +17,8 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 public class WsMessageHandler extends SimpleChannelInboundHandler<WebSocketFrame>
 {
@@ -56,9 +63,6 @@ public class WsMessageHandler extends SimpleChannelInboundHandler<WebSocketFrame
     {
         if (frame instanceof TextWebSocketFrame){
             TextWebSocketFrame text = (TextWebSocketFrame)frame;
-
-            //TODO: send message to specific client or a group.
-
             System.out.println(text.text());
             ChannelFuture future = ctx.channel().writeAndFlush(new TextWebSocketFrame(text.text()));
             future.addListener(new GenericFutureListener<Future<Void>>() {
@@ -70,13 +74,27 @@ public class WsMessageHandler extends SimpleChannelInboundHandler<WebSocketFrame
 
         }else if(frame instanceof BinaryWebSocketFrame){
             BinaryWebSocketFrame b = (BinaryWebSocketFrame)frame;
-            int len = b.content().readableBytes();
-            byte[] bytes = new byte[len];
-            b.content().readBytes(bytes);
+            this.handleMessage(ctx, b.content());
         }
     }
 
-    protected void handleMessage(){
+    private WebSession getSession(ChannelHandlerContext ctx){
+        WebSession session = ctx.channel().attr(ChannelAttributes.SESSIOON_ATTR_KEY).get();
+        return session;
+    }
 
+    protected void handleMessage(ChannelHandlerContext ctx, ByteBuf bytes) throws IOException {
+        ChatMessage chatMessage = MessageUtil.asT(ChatMessage.class, bytes);
+        WebSession session = getSession(ctx);
+        chatMessage.setSender(session.getUid());
+        int value = chatMessage.getOp().intValue();
+        if (value == ChatMessage.OP_JOIN){
+            GatewayServerNode.current.join(ctx.channel(), chatMessage);
+        }else if (value == ChatMessage.OP_QUIT){
+            GatewayServerNode.current.quit(ctx.channel(), chatMessage);
+        }else if (value == ChatMessage.OP_CHAT){
+            //TODO:save message to redis
+            GatewayServerNode.current.newMessage(ctx.channel(), chatMessage);
+        }
     }
 }

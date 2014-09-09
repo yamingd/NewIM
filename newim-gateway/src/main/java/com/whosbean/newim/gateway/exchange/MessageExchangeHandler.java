@@ -1,6 +1,6 @@
-package com.whosbean.gateway.exchange;
+package com.whosbean.newim.gateway.exchange;
 
-import com.whosbean.gateway.connection.ChannelsHolder;
+import com.whosbean.newim.gateway.connection.ChannelsHolder;
 import com.whosbean.newim.common.MessageUtil;
 import com.whosbean.newim.entity.ExchangeMessage;
 import io.netty.buffer.ByteBuf;

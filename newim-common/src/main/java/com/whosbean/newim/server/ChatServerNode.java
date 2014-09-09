@@ -1,7 +1,6 @@
 package com.whosbean.newim.server;
 
 import com.whosbean.newim.entity.ChatMessage;
-import com.whosbean.newim.entity.Chatbox;
 import io.netty.channel.Channel;
 
 /**
@@ -9,27 +8,23 @@ import io.netty.channel.Channel;
  */
 public class ChatServerNode extends ServerNode {
 
-    public void addConnection(final Channel channel, final Chatbox chatbox){
-
-    }
-
     public void newMessage(final Channel channel, final ChatMessage chatMessage){
 
     }
 
-    public void removeConnection(final Channel channel){
+    public void addConnection(final Channel channel){
 
     }
 
-    public void joinGroup(final Channel channel, final Chatbox chatbox){
+    public void remConnection(final Channel channel){
 
     }
 
-    public void quitGroup(final Channel channel, final Chatbox chatbox){
+    public void join(final Channel channel, final ChatMessage chatbox){
 
     }
 
-    public void quit(final Channel channel, final Chatbox chatbox){
+    public void quit(final Channel channel, final ChatMessage chatbox){
 
     }
 

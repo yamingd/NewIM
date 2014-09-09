@@ -1,4 +1,4 @@
-package com.whosbean.gateway.handler;
+package com.whosbean.newim.gateway.handler;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -34,7 +34,7 @@ public class WsConnectedHandler extends SimpleChannelInboundHandler<FullHttpRequ
         // now add our application handler
         ctx.pipeline().addLast(new WsMessageHandler());
 
-        // remove, app is attached and websocket handler in place
+        // remConnection, app is attached and websocket handler in place
         ctx.pipeline().remove(this);
 
         // pass the request on

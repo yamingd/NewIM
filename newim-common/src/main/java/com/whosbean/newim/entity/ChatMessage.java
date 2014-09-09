@@ -10,11 +10,16 @@ import java.util.UUID;
 @Message
 public class ChatMessage extends Chatbox {
 
+    public static final Integer OP_JOIN = 1;
+    public static final Integer OP_QUIT = 2;
+    public static final Integer OP_CHAT = 3;
+
     private String uuid;
     private String sender;
     private String receiver;
     private Integer type;
     private String body;
+    private Integer op;
 
     public String getUuid() {
         return uuid;
@@ -59,5 +64,13 @@ public class ChatMessage extends Chatbox {
     public void assignUuid(){
         this.uuid = UUID.randomUUID().toString();
         this.uuid = this.uuid.replace("-", "");
+    }
+
+    public Integer getOp() {
+        return op;
+    }
+
+    public void setOp(Integer op) {
+        this.op = op;
     }
 }

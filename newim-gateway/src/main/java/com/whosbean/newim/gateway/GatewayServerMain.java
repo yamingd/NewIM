@@ -1,8 +1,8 @@
-package com.whosbean.gateway;
+package com.whosbean.newim.gateway;
 
-import com.whosbean.gateway.exchange.MessageExchangeHandler;
-import com.whosbean.gateway.handler.HttpSessionHandler;
-import com.whosbean.gateway.handler.WsConnectedHandler;
+import com.whosbean.newim.gateway.exchange.MessageExchangeHandler;
+import com.whosbean.newim.gateway.handler.HttpSessionHandler;
+import com.whosbean.newim.gateway.handler.WsConnectedHandler;
 import com.whosbean.newim.server.ServerStarter;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;

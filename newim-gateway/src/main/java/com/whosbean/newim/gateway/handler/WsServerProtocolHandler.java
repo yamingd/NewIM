@@ -1,6 +1,6 @@
-package com.whosbean.gateway.handler;
+package com.whosbean.newim.gateway.handler;
 
-import com.whosbean.gateway.connection.ChannelsHolder;
+import com.whosbean.newim.gateway.connection.ChannelsHolder;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;

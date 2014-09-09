@@ -1,4 +1,4 @@
-package com.whosbean.gateway;
+package com.whosbean.newim.gateway;
 
 import com.whosbean.newim.config.AbstractConfig;
 import org.springframework.stereotype.Component;

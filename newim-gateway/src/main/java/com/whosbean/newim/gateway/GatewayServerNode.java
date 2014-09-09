@@ -1,6 +1,7 @@
-package com.whosbean.gateway;
+package com.whosbean.newim.gateway;
 
 import com.whosbean.newim.server.ChatServerNode;
+import com.whosbean.newim.server.ServerNodeRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -9,8 +10,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class GatewayServerNode extends ChatServerNode {
-
-    public static final String ROLE_GATEWAY = "gateway";
 
     public static GatewayServerNode current = null;
 
@@ -25,7 +24,7 @@ public class GatewayServerNode extends ChatServerNode {
 
     @Override
     protected String getRole() {
-        return ROLE_GATEWAY;
+        return ServerNodeRoles.ROLE_GATEWAY;
     }
 
     @Override
