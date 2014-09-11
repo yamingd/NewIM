@@ -5,13 +5,14 @@ import com.whosbean.newim.gateway.handler.HttpSessionHandler;
 import com.whosbean.newim.gateway.handler.WsConnectedHandler;
 import com.whosbean.newim.server.ServerStarter;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
+import io.netty.handler.codec.bytes.ByteArrayDecoder;
+import io.netty.handler.codec.bytes.ByteArrayEncoder;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
@@ -115,7 +116,14 @@ public class GatewayServerMain implements ServerStarter {
                         @Override
                         public void initChannel(SocketChannel ch)
                                 throws Exception {
-                            ch.pipeline().addLast(new MessageExchangeHandler());
+                            ChannelPipeline pipeline = ch.pipeline();
+                            pipeline.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
+                            pipeline.addLast("bytesDecoder",new ByteArrayDecoder());
+
+                            pipeline.addLast("frameEncoder", new LengthFieldPrepender(4, false));
+                            pipeline.addLast("bytesEncoder", new ByteArrayEncoder());
+
+                            pipeline.addLast("handler", new MessageExchangeHandler());
                         }
                     });
 

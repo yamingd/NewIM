@@ -78,6 +78,10 @@ public abstract class ServerNode implements InitializingBean, DisposableBean {
         return client.getChildren().forPath(path);
     }
 
+    public CuratorFramework getZkClient(){
+        return client;
+    }
+
     protected String getRole(){
         return null;
     }

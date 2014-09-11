@@ -58,6 +58,10 @@ public class ChannelsHolder {
     public static void ack(final Logger logger, final Channel ctx, String msg) {
         //回复客户端.
         byte[] bytes = msg.getBytes();
+        send(logger, ctx, bytes);
+    }
+
+    public static void send(final Logger logger, final Channel ctx, byte[] bytes) {
         final ByteBuf data = ctx.alloc().buffer(bytes.length); // (2)
         data.writeBytes(bytes);
         final ChannelFuture cf = ctx.writeAndFlush(data);

@@ -7,5 +7,5 @@ public class ServerNodeRoles {
 
     public static final String ROLE_GATEWAY = "gateway";
 
-    public static final String ROLE_EXCHANGE = "exchange";
+    public static final String ROLE_ROUTER = "router";
 }

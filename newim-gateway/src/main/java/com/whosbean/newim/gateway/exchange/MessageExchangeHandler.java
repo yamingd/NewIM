@@ -1,9 +1,8 @@
 package com.whosbean.newim.gateway.exchange;
 
-import com.whosbean.newim.gateway.connection.ChannelsHolder;
 import com.whosbean.newim.common.MessageUtil;
 import com.whosbean.newim.entity.ExchangeMessage;
-import io.netty.buffer.ByteBuf;
+import com.whosbean.newim.gateway.connection.ChannelsHolder;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -51,7 +50,7 @@ public class MessageExchangeHandler extends ChannelInboundHandlerAdapter {
         ExchangeMessage message = null;
         try {
 
-            message = MessageUtil.asT(ExchangeMessage.class, (ByteBuf)msg);
+            message = MessageUtil.asT(ExchangeMessage.class, (byte[])msg);
 
         } catch (IOException e) {
             logger.error("ExchangeMessage解析错误", e);
