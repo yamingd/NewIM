@@ -7,23 +7,12 @@ import org.msgpack.annotation.Message;
  */
 @Message
 public class Chatbox {
-
-    private Integer id;
-    private Integer group = 0;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getGroup() {
-        return group;
-    }
-
-    public void setGroup(Integer group) {
-        this.group = group;
-    }
+    /**
+     * chat room id.
+     */
+    public Integer id;
+    /**
+     * if this chat room is a group chat then set 1 else set 0.
+     */
+    public Integer group = 0;
 }

@@ -1,5 +1,6 @@
 package com.whosbean.newim.entity;
 
+import com.google.common.collect.Lists;
 import org.msgpack.annotation.Message;
 
 import java.io.Serializable;
@@ -10,32 +11,30 @@ import java.util.List;
  */
 @Message
 public class ExchangeMessage implements Serializable {
+    /**
+     * those clients will be receiving this messages
+     * in batch mode
+     */
+    public List<Integer> channelIds;
+    /**
+     * message id
+     */
+    public String messageId;
+    /**
+     * message content
+     */
+    public String message;
 
-    private List<Integer> channelIds;
-    private String messageId;
-    private String message;
-
-    public List<Integer> getChannelIds() {
-        return channelIds;
+    public ExchangeMessage() {
+        channelIds = Lists.newArrayList();
     }
 
-    public void setChannelIds(List<Integer> channelIds) {
-        this.channelIds = channelIds;
-    }
-
-    public String getMessageId() {
-        return messageId;
-    }
-
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+    @Override
+    public String toString() {
+        return "ExchangeMessage{" +
+                "channelIds=" + channelIds +
+                ", messageId='" + messageId + '\'' +
+                ", message='" + message + '\'' +
+                '}';
     }
 }

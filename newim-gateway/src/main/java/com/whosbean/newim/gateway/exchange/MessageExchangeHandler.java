@@ -2,10 +2,13 @@ package com.whosbean.newim.gateway.exchange;
 
 import com.whosbean.newim.common.MessageUtil;
 import com.whosbean.newim.entity.ExchangeMessage;
+import com.whosbean.newim.gateway.GatewayConfig;
 import com.whosbean.newim.gateway.connection.ChannelsHolder;
+import com.whosbean.newim.service.ChatMessageService;
+import com.whosbean.newim.service.ChatMessageServiceFactory;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,13 +18,15 @@ import java.util.concurrent.ExecutorService;
 /**
  * Created by yaming_deng on 14-9-9.
  */
-public class MessageExchangeHandler extends ChannelInboundHandlerAdapter {
+public class MessageExchangeHandler extends SimpleChannelInboundHandler<byte[]> {
 
     protected static Logger logger = LoggerFactory.getLogger(MessageExchangeHandler.class);
 
     private ExecutorService executor = null;
+    private ChatMessageService chatMessageService;
 
     public MessageExchangeHandler(){
+        chatMessageService = ChatMessageServiceFactory.get(GatewayConfig.current);
         //executor = Executors.newFixedThreadPool(10);
     }
 
@@ -33,50 +38,39 @@ public class MessageExchangeHandler extends ChannelInboundHandlerAdapter {
         logger.info("channelActive: " + ctx.channel().hashCode());
     }
 
-    /**
-     * 读取新消息
-     */
     @Override
-    public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
+    protected void channelRead0(ChannelHandlerContext ctx, byte[] msg) throws Exception {
         logger.info("channelRead: " + ctx.channel().hashCode());
-
         /**
          * after receiving
          * 1. find client's channel
          * 2. send message in async way
          * 3. ack back to
          */
-
         ExchangeMessage message = null;
         try {
-
             message = MessageUtil.asT(ExchangeMessage.class, (byte[])msg);
-
         } catch (IOException e) {
             logger.error("ExchangeMessage解析错误", e);
             ack(ctx.channel(), "ERR");
             return;
         }
 
-        for (Integer cid : message.getChannelIds()){
+        byte[] bytes = chatMessageService.getBytes(message.messageId);
+        int total = 0;
+        for (Integer cid : message.channelIds){
             Channel c = ChannelsHolder.get(cid);
             if (c != null){
-                ack(c, message.getMessage());
+                ChannelsHolder.ack(logger, c, bytes);
+                total ++;
             }
         }
 
-        ack(ctx.channel(), "OK");
-
-        ctx.fireChannelRead(msg);
+        ack(ctx.channel(), total + "");
     }
 
     private void ack(final Channel ctx, String msg) {
         ChannelsHolder.ack(logger, ctx, msg);
-    }
-
-    @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        logger.info("channelReadComplete: " + ctx.channel().hashCode());
     }
 
     /**

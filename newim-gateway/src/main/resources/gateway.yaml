@@ -9,3 +9,6 @@ exchange:
  actors: 10
  workers: 10
  port: 8081
+
+bucket:
+ engine: redis

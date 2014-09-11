@@ -1,10 +1,13 @@
 package com.whosbean.newim.gateway.handler;
 
+import com.whosbean.newim.gateway.GatewayConfig;
 import com.whosbean.newim.gateway.GatewayServerNode;
 import com.whosbean.newim.gateway.connection.ChannelsHolder;
 import com.whosbean.newim.gateway.connection.WebSession;
 import com.whosbean.newim.common.MessageUtil;
 import com.whosbean.newim.entity.ChatMessage;
+import com.whosbean.newim.service.ChatMessageService;
+import com.whosbean.newim.service.ChatMessageServiceFactory;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -24,6 +27,12 @@ public class WsMessageHandler extends SimpleChannelInboundHandler<WebSocketFrame
 {
 
     protected static Logger logger = LoggerFactory.getLogger(WsMessageHandler.class);
+
+    protected ChatMessageService chatMessageService;
+
+    public WsMessageHandler() {
+        chatMessageService = ChatMessageServiceFactory.get(GatewayConfig.current);
+    }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
@@ -86,14 +95,14 @@ public class WsMessageHandler extends SimpleChannelInboundHandler<WebSocketFrame
     protected void handleMessage(ChannelHandlerContext ctx, ByteBuf bytes) throws IOException {
         ChatMessage chatMessage = MessageUtil.asT(ChatMessage.class, bytes);
         WebSession session = getSession(ctx);
-        chatMessage.setSender(session.getUid());
-        int value = chatMessage.getOp().intValue();
+        chatMessage.sender = session.getUid();
+        int value = chatMessage.op.intValue();
         if (value == ChatMessage.OP_JOIN){
             GatewayServerNode.current.join(ctx.channel(), chatMessage);
         }else if (value == ChatMessage.OP_QUIT){
             GatewayServerNode.current.quit(ctx.channel(), chatMessage);
         }else if (value == ChatMessage.OP_CHAT){
-            //TODO:save message to redis
+            this.chatMessageService.save(chatMessage);
             GatewayServerNode.current.newMessage(ctx.channel(), chatMessage);
         }
     }
