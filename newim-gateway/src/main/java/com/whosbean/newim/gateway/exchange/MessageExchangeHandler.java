@@ -3,6 +3,7 @@ package com.whosbean.newim.gateway.exchange;
 import com.whosbean.newim.common.MessageUtil;
 import com.whosbean.newim.entity.ExchangeMessage;
 import com.whosbean.newim.gateway.GatewayConfig;
+import com.whosbean.newim.gateway.GatewayServerNode;
 import com.whosbean.newim.gateway.connection.ChannelsHolder;
 import com.whosbean.newim.service.ChatMessageService;
 import com.whosbean.newim.service.ChatMessageServiceFactory;
@@ -13,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Created by yaming_deng on 14-9-9.
@@ -22,12 +22,10 @@ public class MessageExchangeHandler extends SimpleChannelInboundHandler<byte[]> 
 
     protected static Logger logger = LoggerFactory.getLogger(MessageExchangeHandler.class);
 
-    private ExecutorService executor = null;
     private ChatMessageService chatMessageService;
 
     public MessageExchangeHandler(){
         chatMessageService = ChatMessageServiceFactory.get(GatewayConfig.current);
-        //executor = Executors.newFixedThreadPool(10);
     }
 
     /**
@@ -49,7 +47,7 @@ public class MessageExchangeHandler extends SimpleChannelInboundHandler<byte[]> 
          */
         ExchangeMessage message = null;
         try {
-            message = MessageUtil.asT(ExchangeMessage.class, (byte[])msg);
+            message = MessageUtil.asT(ExchangeMessage.class, msg);
         } catch (IOException e) {
             logger.error("ExchangeMessage解析错误", e);
             ack(ctx.channel(), "ERR");
@@ -61,8 +59,10 @@ public class MessageExchangeHandler extends SimpleChannelInboundHandler<byte[]> 
         for (Integer cid : message.channelIds){
             Channel c = ChannelsHolder.get(cid);
             if (c != null){
-                ChannelsHolder.ack(logger, c, bytes);
+                ChannelsHolder.ack(logger, c, bytes, message.chatPath);
                 total ++;
+            }else{
+                GatewayServerNode.current.remConnection(c, message.chatPath);
             }
         }
 

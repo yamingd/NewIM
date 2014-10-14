@@ -24,6 +24,14 @@ public class ExchangeMessage implements Serializable {
      * message content
      */
     public String message;
+    /**
+     * Chat room Path.
+     */
+    public String chatPath;
+    /**
+     * Chat room id
+     */
+    public String chatRoomId;
 
     public ExchangeMessage() {
         channelIds = Lists.newArrayList();
@@ -35,6 +43,8 @@ public class ExchangeMessage implements Serializable {
                 "channelIds=" + channelIds +
                 ", messageId='" + messageId + '\'' +
                 ", message='" + message + '\'' +
+                ", chatPath='" + chatPath + '\'' +
+                ", chatRoomId='" + chatRoomId + '\'' +
                 '}';
     }
 }

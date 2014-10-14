@@ -27,8 +27,7 @@ public class ChannelsHolder {
     public static void add(final Channel c){
         Channel exists = mapping.putIfAbsent(c.hashCode(), c);
         if (exists == null){
-            //new one then add it into Zookeeper
-            GatewayServerNode.current.addConnection(c);
+
         }
     }
 
@@ -41,10 +40,6 @@ public class ChannelsHolder {
      */
     public static boolean remove(final Channel c){
         boolean flag = mapping.remove(c.hashCode()) != null;
-        if (flag){
-            //remConnection it from zookeeper too.
-            GatewayServerNode.current.remConnection(c);
-        }
         return flag;
     }
 
@@ -61,16 +56,16 @@ public class ChannelsHolder {
     public static void ack(final Logger logger, final Channel ctx, String msg) {
         //回复客户端.
         byte[] bytes = msg.getBytes();
-        ack(logger, ctx, bytes);
+        ack(logger, ctx, bytes, null);
     }
 
     public static void ack(final Logger logger, final Channel ctx, ChatMessage msg) throws IOException {
         //回复客户端.
         byte[] bytes = MessageUtil.asBytes(msg);
-        ack(logger, ctx, bytes);
+        ack(logger, ctx, bytes, null);
     }
 
-    public static void ack(final Logger logger, final Channel ctx, byte[] bytes) {
+    public static void ack(final Logger logger, final Channel ctx, byte[] bytes, final String chatPath) {
         final ByteBuf data = ctx.alloc().buffer(bytes.length); // (2)
         data.writeBytes(bytes);
         final ChannelFuture cf = ctx.writeAndFlush(data);
@@ -78,6 +73,10 @@ public class ChannelsHolder {
             @Override
             public void operationComplete(Future<Void> future) throws Exception {
                 if(future.cause() != null){
+                    if (chatPath != null){
+                        //remove this client from members.
+                        GatewayServerNode.current.remConnection(ctx, chatPath);
+                    }
                     logger.error("发送消息错误. cid=" + ctx.hashCode(), future.cause());
                     remove(ctx);
                     ctx.close();

@@ -24,16 +24,16 @@ public class GatewayServerNode extends ChatServerNode {
 
     @Override
     protected String getRole() {
-        return ServerNodeRoles.ROLE_GATEWAY;
+        return ServerNodeRoles.ROLE_EXCHANGE;
     }
 
     @Override
     protected String getName() {
-        return gatewayConfig.getGatewaySig();
+        return gatewayConfig.getExchangeSig();
     }
 
     @Override
     protected String getConf() {
-        return getName();
+        return gatewayConfig.getGatewaySig();
     }
 }

@@ -1,5 +1,6 @@
 package com.whosbean.newim.server;
 
+import com.whosbean.newim.zookeeper.ZKPaths;
 import com.whosbean.newim.zookeeper.ZookeeperConfig;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
@@ -19,9 +20,6 @@ import java.util.List;
  * Created by yaming_deng on 14-9-9.
  */
 public abstract class ServerNode implements InitializingBean, DisposableBean {
-
-    public static final String NS_ROOT = "/newim";
-    public static final String PATH_SERVERS = "/servers";
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -53,12 +51,12 @@ public abstract class ServerNode implements InitializingBean, DisposableBean {
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(wait, limit);
         client = CuratorFrameworkFactory.newClient(zookeeperConnectionString, retryPolicy);
         client.start();
-        client.newNamespaceAwareEnsurePath(NS_ROOT);
+        client.newNamespaceAwareEnsurePath(ZKPaths.NS_ROOT);
     }
 
     protected void registryAtZookeeper() throws Exception {
         //ip+":"+port
-        String path = String.format("%s/%s/%s", PATH_SERVERS, this.getRole(), this.getName());
+        String path = String.format("%s/%s/%s", ZKPaths.PATH_SERVERS, this.getRole(), this.getName());
         try {
             Stat stat = client.checkExists().forPath(path);
             if (stat != null) {
@@ -74,7 +72,7 @@ public abstract class ServerNode implements InitializingBean, DisposableBean {
     }
 
     public List<String> getServers(String role) throws Exception {
-        String path = String.format("%s/%s", PATH_SERVERS, role);
+        String path = String.format("%s/%s", ZKPaths.PATH_SERVERS, role);
         return client.getChildren().forPath(path);
     }
 

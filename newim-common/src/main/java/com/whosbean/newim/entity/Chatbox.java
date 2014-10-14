@@ -7,6 +7,11 @@ import org.msgpack.annotation.Message;
  */
 @Message
 public class Chatbox {
+
+    public static final Integer OP_JOIN = 1;
+    public static final Integer OP_QUIT = 2;
+    public static final Integer OP_CHAT = 3;
+
     /**
      * chat room id.
      */
@@ -15,4 +20,8 @@ public class Chatbox {
      * if this chat room is a group chat then set 1 else set 0.
      */
     public Integer group = 0;
+    /**
+     * 聊天室操作代号
+     */
+    public Integer op;
 }

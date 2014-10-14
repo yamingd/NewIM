@@ -1,8 +1,7 @@
 package com.whosbean.newim.chatter.exchange;
 
 import com.whosbean.newim.chatter.RouterServerNode;
-import com.whosbean.newim.server.ServerNode;
-import com.whosbean.newim.server.ServerNodeRoles;
+import com.whosbean.newim.zookeeper.ZKPaths;
 import org.apache.curator.framework.api.CuratorWatcher;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
@@ -28,6 +27,8 @@ import java.util.concurrent.ConcurrentSkipListSet;
 public class ExchangeClientManager implements InitializingBean, DisposableBean {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public static ExchangeClientManager instance;
 
     @Autowired
     private RouterServerNode routerServerNode;
@@ -67,7 +68,7 @@ public class ExchangeClientManager implements InitializingBean, DisposableBean {
                 byte[] data = null;
                 System.out.println(path+":"+new String(data, Charset.forName("utf-8")));
             }else if(event.getType() == Watcher.Event.EventType.NodeChildrenChanged){
-                List<String> list = routerServerNode.getServers(ServerNodeRoles.ROLE_GATEWAY);
+                List<String> list = routerServerNode.getExchangeServer();
                 //compare
                 for (String item : list){
                     if (servers.contains(item)){
@@ -99,17 +100,17 @@ public class ExchangeClientManager implements InitializingBean, DisposableBean {
                 try {
                     stat = routerServerNode.getZkClient()
                             .checkExists()
-                            .usingWatcher(new ServerNodeWatcher(ServerNode.PATH_SERVERS))
-                            .forPath(ServerNode.PATH_SERVERS);
+                            .usingWatcher(new ServerNodeWatcher(ZKPaths.PATH_SERVERS))
+                            .forPath(ZKPaths.PATH_SERVERS);
                     if (stat != null){
-                        List<String> list = routerServerNode.getServers(ServerNodeRoles.ROLE_GATEWAY);
+                        List<String> list = routerServerNode.getExchangeServer();
                         for (String host : list){
                             newExchangeClient(host);
                         }
                         servers.addAll(list);
                         break;
                     }else{
-                        logger.info("wait for path. " + ServerNode.PATH_SERVERS);
+                        logger.info("wait for path. " + ZKPaths.PATH_SERVERS);
                         Thread.sleep(1 * 1000);
                     }
                 } catch (Exception e) {
@@ -136,7 +137,9 @@ public class ExchangeClientManager implements InitializingBean, DisposableBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        instance = this;
         new ListenThread().start();
+        logger.info("ExchangeClientManager start.");
     }
 
     public ExchangeClient find(String host){

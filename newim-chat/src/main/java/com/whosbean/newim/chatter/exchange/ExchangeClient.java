@@ -36,7 +36,7 @@ public class ExchangeClient {
     private List<Channel> channelList = Lists.newArrayList();
     private AtomicInteger seq = new AtomicInteger();
     private final Bootstrap b = new Bootstrap(); // (1)
-    private EventLoopGroup workerGroup;
+    private NioEventLoopGroup workerGroup;
 
     public ExchangeClient(String host, Integer port) {
         this.host = host;
@@ -99,8 +99,8 @@ public class ExchangeClient {
     }
 
     private void startConnect(){
-        final int pool = 10;
-        workerGroup = new NioEventLoopGroup(pool);
+        workerGroup = new NioEventLoopGroup();
+        int pool = workerGroup.executorCount();
         try {
             b.group(workerGroup); // (2)
             b.channel(NioSocketChannel.class); // (3)
@@ -166,23 +166,33 @@ public class ExchangeClient {
         return c;
     }
 
-    public void send(ExchangeMessage message) throws Exception {
+    public void send(final ExchangeMessage message) throws Exception {
         if (!this.enabled){
             throw new Exception("Exchange Client has been disabled. host=" + host + ":" + port);
         }
 
-        final Channel c = get();
         byte[] bytes = MessageUtil.asBytes(message);
+        postSent(message, bytes, 3);
+
+    }
+
+    private void postSent(final ExchangeMessage message, final byte[] bytes, final int trylimit) {
+        final Channel c = get();
         final ByteBuf data = c.config().getAllocator().buffer(bytes.length); // (2)
         data.writeBytes(bytes);
         ChannelFuture cf = c.writeAndFlush(data);
         cf.addListener(new GenericFutureListener<Future<Void>>() {
             @Override
             public void operationComplete(Future<Void> future) throws Exception {
-                if(future.cause() != null){
-                    logger.error("发送消息错误. host=" + host + ":" + port, future.cause());
+                if (future.cause() != null) {
+                    logger.error("发送消息错误. host=" + host + ":" + port + ", messageId=" + message.messageId, future.cause());
                     c.close();
                     channelList.remove(c);
+                    if (trylimit > 0){
+                        postSent(message, bytes, trylimit - 1);
+                    }
+                }else{
+                    logger.info("发送消息成功. messageId=" + message.messageId);
                 }
             }
         });

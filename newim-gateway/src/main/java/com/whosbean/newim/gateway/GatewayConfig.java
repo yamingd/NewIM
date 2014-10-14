@@ -16,6 +16,7 @@ public class GatewayConfig extends AbstractConfig {
     private String gatewayHost;
     private Integer gatewayPort;
     private String gatewaySig;
+    private String exchangeSig;
 
     @Override
     public String getConfName() {
@@ -34,6 +35,11 @@ public class GatewayConfig extends AbstractConfig {
         gatewayHost = (String)server.get("ip");
         gatewayPort = (Integer)server.get("port");
         gatewaySig = gatewayHost+":"+ gatewayPort;
+
+        server = this.get(Map.class, "exchange");
+        String host = (String)server.get("ip");
+        Integer port = (Integer)server.get("port");
+        exchangeSig = host+":"+ port;
     }
 
     public String getGatewayHost() {
@@ -48,4 +54,7 @@ public class GatewayConfig extends AbstractConfig {
         return gatewaySig;
     }
 
+    public String getExchangeSig() {
+        return exchangeSig;
+    }
 }

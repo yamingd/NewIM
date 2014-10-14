@@ -4,6 +4,8 @@ import com.whosbean.newim.server.ServerNode;
 import com.whosbean.newim.server.ServerNodeRoles;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * Created by yaming_deng on 14-9-9.
  */
@@ -25,12 +27,15 @@ public class RouterServerNode extends ServerNode {
 
     @Override
     protected String getName() {
-        return "router";
+        return ChatterConfig.current.getSig();
     }
 
     @Override
     protected String getConf() {
-        return getName();
+        return ChatterConfig.current.getSig();
     }
 
+    public List<String> getExchangeServer() throws Exception {
+        return this.getServers(ServerNodeRoles.ROLE_EXCHANGE);
+    }
 }

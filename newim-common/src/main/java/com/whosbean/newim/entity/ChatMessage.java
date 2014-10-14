@@ -9,17 +9,26 @@ import java.util.UUID;
  */
 @Message
 public class ChatMessage extends Chatbox {
-
-    public static final Integer OP_JOIN = 1;
-    public static final Integer OP_QUIT = 2;
-    public static final Integer OP_CHAT = 3;
-
+    /**
+     * 消息id
+     */
     public String uuid;
+    /**
+     * 发送人
+     */
     public String sender;
+    /**
+     * 接收人
+     */
     public String receiver;
+    /**
+     * 消息类型
+     */
     public Integer type;
+    /**
+     * 消息主体
+     */
     public String body;
-    public Integer op;
 
     public void assignUuid(){
         this.uuid = UUID.randomUUID().toString();
