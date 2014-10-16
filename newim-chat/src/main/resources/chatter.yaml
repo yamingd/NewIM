@@ -2,7 +2,7 @@ server:
  ip: 127.0.0.1
  actors: 10
  workers: 10
- port: 8080
+ port: 8180
 
 bucket:
  engine: redis

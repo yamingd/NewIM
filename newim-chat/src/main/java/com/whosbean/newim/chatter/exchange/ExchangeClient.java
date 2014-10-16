@@ -71,15 +71,15 @@ public class ExchangeClient {
             channelList.remove(ctx.channel());
             cause.printStackTrace();
             ctx.close();
-            renewChannel();
+
         }
 
         @Override
         public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-            System.out.println("channelInactive: " + ctx.channel());
-            channelList.remove(ctx.channel());
+            System.out.println("channelInactive: " + ctx.channel() + ", ");
+            //channelList.remove(ctx.channel());
             ctx.fireChannelInactive();
-            renewChannel();
+
         }
 
     }
@@ -160,6 +160,9 @@ public class ExchangeClient {
     }
 
     private Channel get(){
+        if (channelList.size() == 0){
+            renewChannel();
+        }
         long id = seq.getAndIncrement();
         id = id % channelList.size();
         Channel c = channelList.get((int)id);
