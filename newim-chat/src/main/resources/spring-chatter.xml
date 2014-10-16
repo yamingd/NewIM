@@ -9,6 +9,6 @@
     <context:annotation-config />
     <context:component-scan base-package="com.whosbean.newim.zookeeper"/>
     <context:component-scan base-package="com.whosbean.newim.redis"/>
-    <context:component-scan base-package="com.whosbean.newim.gateway"/>
+    <context:component-scan base-package="com.whosbean.newim.chatter"/>
 
 </beans>

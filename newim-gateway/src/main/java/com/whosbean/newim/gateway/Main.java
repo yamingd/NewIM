@@ -24,9 +24,7 @@ import java.util.Map;
 /**
  * Created by yaming_deng on 14-9-9.
  */
-public class GatewayServerMain implements ServerStarter {
-
-    private static int port = 8080;
+public class Main implements ServerStarter {
 
     public class WebsocketServerThread extends Thread{
 
@@ -60,7 +58,7 @@ public class GatewayServerMain implements ServerStarter {
         Integer actSize = (Integer)server.get("actors");
         Integer workerSize = (Integer)server.get("workers");
         String host = (String)server.get("ip");
-        port = (Integer)server.get("port");
+        int port = (Integer)server.get("port");
 
         EventLoopGroup parentGroup = new NioEventLoopGroup(actSize); // 用于接收发来的连接请求
         EventLoopGroup childGroup = new NioEventLoopGroup(workerSize); // 用于处理parentGroup接收并注册给child的连接中的信息
@@ -103,7 +101,7 @@ public class GatewayServerMain implements ServerStarter {
         Integer actSize = (Integer)server.get("actors");
         Integer workerSize = (Integer)server.get("workers");
         String host = (String)server.get("ip");
-        port = (Integer)server.get("port");
+        int port = (Integer)server.get("port");
 
         EventLoopGroup parentGroup = new NioEventLoopGroup(actSize); // 用于接收发来的连接请求
         EventLoopGroup childGroup = new NioEventLoopGroup(workerSize); // 用于处理parentGroup接收并注册给child的连接中的信息
@@ -147,7 +145,7 @@ public class GatewayServerMain implements ServerStarter {
      * @param args
      */
     public static void main(String[] args) {
-        new GatewayServerMain().start();
+        new Main().start();
     }
 
 }

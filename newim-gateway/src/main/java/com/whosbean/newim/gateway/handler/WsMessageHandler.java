@@ -1,11 +1,11 @@
 package com.whosbean.newim.gateway.handler;
 
+import com.whosbean.newim.common.MessageUtil;
+import com.whosbean.newim.entity.ChatMessage;
 import com.whosbean.newim.gateway.GatewayConfig;
 import com.whosbean.newim.gateway.GatewayServerNode;
 import com.whosbean.newim.gateway.connection.ChannelsHolder;
 import com.whosbean.newim.gateway.connection.WebSession;
-import com.whosbean.newim.common.MessageUtil;
-import com.whosbean.newim.entity.ChatMessage;
 import com.whosbean.newim.service.ChatMessageService;
 import com.whosbean.newim.service.ChatMessageServiceFactory;
 import io.netty.buffer.ByteBuf;
@@ -20,8 +20,6 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 public class WsMessageHandler extends SimpleChannelInboundHandler<WebSocketFrame>
 {
@@ -92,7 +90,7 @@ public class WsMessageHandler extends SimpleChannelInboundHandler<WebSocketFrame
         return session;
     }
 
-    protected void handleMessage(ChannelHandlerContext ctx, ByteBuf bytes) throws IOException {
+    protected void handleMessage(ChannelHandlerContext ctx, ByteBuf bytes) throws Exception {
         ChatMessage chatMessage = MessageUtil.asT(ChatMessage.class, bytes);
         WebSession session = getSession(ctx);
         chatMessage.sender = session.getUid();

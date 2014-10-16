@@ -22,6 +22,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+        <module name="demo" />
         <module name="newim-chat" />
         <module name="newim-common" />
         <module name="newim-gateway" />

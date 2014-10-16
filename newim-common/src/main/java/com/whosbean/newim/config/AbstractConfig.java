@@ -39,7 +39,7 @@ public abstract class AbstractConfig implements InitializingBean{
     }
 
     protected synchronized void load() throws IOException {
-        this.cfgFile = String.format("/%s/%s", this.getEnvName(), this.cfgFile);
+        this.cfgFile = String.format("%s.yaml", this.cfgFile);
         if (this.cfg != null){
             return;
         }

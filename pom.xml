@@ -9,6 +9,7 @@
         <module>newim-gateway</module>
         <module>newim-chat</module>
         <module>newim-common</module>
+        <module>demo</module>
     </modules>
     <packaging>pom</packaging>
 

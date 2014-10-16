@@ -6,6 +6,7 @@ import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.curator.utils.EnsurePath;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
@@ -44,19 +45,20 @@ public abstract class ServerNode implements InitializingBean, DisposableBean {
         }
     }
 
-    protected void connectZookeeper(){
+    protected void connectZookeeper() throws Exception {
         String zookeeperConnectionString = zookeeperConfig.getServers(); //"localhost:2181,localhost:2182,localhost:2183";
         int limit = zookeeperConfig.getRetryLimit();
         int wait = zookeeperConfig.getRetryInterval();
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(wait, limit);
         client = CuratorFrameworkFactory.newClient(zookeeperConnectionString, retryPolicy);
         client.start();
-        client.newNamespaceAwareEnsurePath(ZKPaths.NS_ROOT);
+        EnsurePath ensurePath = client.newNamespaceAwareEnsurePath(ZKPaths.NS_ROOT);
+        ensurePath.ensure(client.getZookeeperClient());
     }
 
     protected void registryAtZookeeper() throws Exception {
         //ip+":"+port
-        String path = String.format("%s/%s/%s", ZKPaths.PATH_SERVERS, this.getRole(), this.getName());
+        String path = ZKPaths.getServerPath(this.getRole(), this.getName());
         try {
             Stat stat = client.checkExists().forPath(path);
             if (stat != null) {
@@ -72,7 +74,7 @@ public abstract class ServerNode implements InitializingBean, DisposableBean {
     }
 
     public List<String> getServers(String role) throws Exception {
-        String path = String.format("%s/%s", ZKPaths.PATH_SERVERS, role);
+        String path = ZKPaths.getServerPath(role);
         return client.getChildren().forPath(path);
     }
 

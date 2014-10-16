@@ -23,7 +23,7 @@ public class ChatServerNode extends ServerNode {
             logger.error("Zookeeper Client is Lost");
             return;
         }
-        String path = String.format("%s/messages/%06d/%s", ZKPaths.PATH_CHATS, chatMessage.id, chatMessage.uuid);
+        String path = ZKPaths.getMessagePath(chatMessage.id, chatMessage.uuid);
         String data = "NM"+"\n"+chatMessage.uuid;
         this.client.create().forPath(path, data.getBytes("UTF-8"));
     }
@@ -40,7 +40,7 @@ public class ChatServerNode extends ServerNode {
             logger.error("Zookeeper Client is Lost");
             return;
         }
-        String path = String.format("%s/%s", ZKPaths.PATH_CHATS, msgPath);
+        String path = ZKPaths.getMessagePath(msgPath);
         this.client.delete().forPath(path);
     }
 
@@ -57,7 +57,7 @@ public class ChatServerNode extends ServerNode {
             logger.error("Zookeeper Client is Lost");
             return;
         }
-        String path = String.format("%s/members/%s/%s", ZKPaths.PATH_CHATS, chatPath, channel.hashCode());
+        String path = ZKPaths.getMemberPath(chatPath, channel.hashCode());
         this.client.delete().forPath(path);
     }
 
@@ -73,7 +73,7 @@ public class ChatServerNode extends ServerNode {
             logger.error("Zookeeper Client is Lost");
             return;
         }
-        String path = String.format("%s/members/%06d/%s/%s", ZKPaths.PATH_CHATS, chatbox.id, this.getName(), channel.hashCode());
+        String path = ZKPaths.getMemberPath(chatbox.id, this.getName(), channel.hashCode());
         String data = "NJ"+"\n"+chatbox.uuid;
         this.client.create().forPath(path, data.getBytes("UTF-8"));
     }
@@ -83,7 +83,7 @@ public class ChatServerNode extends ServerNode {
             logger.error("Zookeeper Client is Lost");
             return null;
         }
-        String path = String.format("%s/members/%s", ZKPaths.PATH_CHATS, boxid);
+        String path = ZKPaths.getMemberPath(boxid);
         List<String> list = this.client.getChildren().forPath(path);
         return list;
     }
@@ -100,7 +100,7 @@ public class ChatServerNode extends ServerNode {
             logger.error("Zookeeper Client is Lost");
             return;
         }
-        String path = String.format("%s/members/%06d/%s/%s", ZKPaths.PATH_CHATS, chatbox.id, this.getName(), channel.hashCode());
+        String path = ZKPaths.getMemberPath(chatbox.id, this.getName(), channel.hashCode());
         this.client.delete().forPath(path);
     }
 

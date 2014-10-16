@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/NewIM.iml" filepath="$PROJECT_DIR$/NewIM.iml" />
+      <module fileurl="file://$PROJECT_DIR$/demo/demo.iml" filepath="$PROJECT_DIR$/demo/demo.iml" />
       <module fileurl="file://$PROJECT_DIR$/newim-chat/newim-chat.iml" filepath="$PROJECT_DIR$/newim-chat/newim-chat.iml" />
       <module fileurl="file://$PROJECT_DIR$/newim-common/newim-common.iml" filepath="$PROJECT_DIR$/newim-common/newim-common.iml" />
       <module fileurl="file://$PROJECT_DIR$/newim-gateway/newim-gateway.iml" filepath="$PROJECT_DIR$/newim-gateway/newim-gateway.iml" />

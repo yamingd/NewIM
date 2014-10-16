@@ -15,7 +15,7 @@ public class Chatbox {
     /**
      * chat room id.
      */
-    public Integer id;
+    public String id;
     /**
      * if this chat room is a group chat then set 1 else set 0.
      */

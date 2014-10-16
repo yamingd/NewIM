@@ -12,11 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.Charset;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Created by Yaming on 2014/10/14.
@@ -32,17 +31,23 @@ public class ChatMessageListener implements InitializingBean, DisposableBean {
     @Autowired
     private ExchangeClientManager exchangeClientManager;
 
-    private ExecutorService executors = null;
+    private ThreadPoolTaskExecutor executors = null;
+
+    private volatile boolean stopped = false;
 
     @Override
     public void destroy() throws Exception {
-
+        stopped = true;
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        int pool = Runtime.getRuntime().availableProcessors() * 2;
-        executors = Executors.newFixedThreadPool(pool);
+        int limit = Runtime.getRuntime().availableProcessors() * 2;
+        executors = new ThreadPoolTaskExecutor();
+        executors.setCorePoolSize(limit/5);
+        executors.setMaxPoolSize(limit);
+        executors.setWaitForTasksToCompleteOnShutdown(true);
+        executors.afterPropertiesSet();
         new ListenThread().start();
         logger.info("ChatMessageListner start.");
     }
