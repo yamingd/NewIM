@@ -13,7 +13,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />
     <orderEntry type="library" name="Maven: com.ning:async-http-client:1.9.0-BETA10" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty:3.9.3.Final" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.5" level="project" />
     <orderEntry type="module" module-name="newim-common" />
     <orderEntry type="library" name="Maven: redis.clients:jedis:2.2.1" level="project" />
