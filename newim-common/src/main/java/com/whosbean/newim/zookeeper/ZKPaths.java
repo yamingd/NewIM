@@ -14,10 +14,19 @@ public class ZKPaths {
      */
     public static final String PATH_SERVERS = "/servers";
     /**
-     * /newim/chats/members/0000x/channel-id(data=ip:port-for-exchange)
-     * /newim/chats/messages/0000x/m-00xxxx(data=msg-id)
+     * /newim/chats/0000x/channel-id(data=ip:port-for-exchange)
      */
     public static final String PATH_CHATS = "/chats";
+    /**
+     * new message
+     * /newim/inbox/{boxid}/{msgid}
+     */
+    public static final String PATH_INBOX = "/inbox";
+    /**
+     * message out
+     * /newim/outbox/{boxid}/{msgid}
+     */
+    public static final String PATH_OUTBOX = "/outbox";
 
     public static String getServerPath(String role){
         String path = String.format("%s%s/%s", ZKPaths.NS_ROOT, ZKPaths.PATH_SERVERS, role);
@@ -30,27 +39,37 @@ public class ZKPaths {
     }
 
     public static String getMemberPath(String boxid, String serverName, Integer channelid){
-        String path = String.format("%s/%s/members/%s/%s/%s", ZKPaths.NS_ROOT, ZKPaths.PATH_CHATS, boxid, serverName, channelid);
+        String path = String.format("%s%s/%s/%s/%s", ZKPaths.NS_ROOT, ZKPaths.PATH_CHATS, boxid, serverName, channelid);
         return path;
     }
 
     public static String getMemberPath(String chatPath, Integer channelid){
-        String path = String.format("%s/%s/members/%s/%s", ZKPaths.NS_ROOT, ZKPaths.PATH_CHATS, chatPath, channelid);
+        String path = String.format("%s%s/%s/%s", ZKPaths.NS_ROOT, ZKPaths.PATH_CHATS, chatPath, channelid);
         return path;
     }
 
     public static String getMemberPath(String boxid){
-        String path = String.format("%s/%s/members/%s", ZKPaths.NS_ROOT, ZKPaths.PATH_CHATS, boxid);
+        String path = String.format("%s%s/%s", ZKPaths.NS_ROOT, ZKPaths.PATH_CHATS, boxid);
         return path;
     }
 
-    public static String getMessagePath(String boxid, String msgid){
-        String path = String.format("%s/%s/messages/%s/%s", ZKPaths.NS_ROOT, ZKPaths.PATH_CHATS, boxid, msgid);
+    public static String getInboxPath(String boxid, String msgid){
+        String path = String.format("%s%s/%s/%s", ZKPaths.NS_ROOT, ZKPaths.PATH_INBOX, boxid, msgid);
         return path;
     }
 
-    public static String getMessagePath(String msgpath){
-        String path = String.format("%s/%s/messages/%s", ZKPaths.NS_ROOT, ZKPaths.PATH_CHATS, msgpath);
+    public static String getOutboxPath(String boxid, String msgid){
+        String path = String.format("%s%s/%s/%s", ZKPaths.NS_ROOT, ZKPaths.PATH_OUTBOX, boxid, msgid);
+        return path;
+    }
+
+    public static String getInboxPath(String msgpath){
+        String path = String.format("%s%s/%s", ZKPaths.NS_ROOT, ZKPaths.PATH_INBOX, msgpath);
+        return path;
+    }
+
+    public static String getOutboxPath(String msgpath){
+        String path = String.format("%s%s/%s", ZKPaths.NS_ROOT, ZKPaths.PATH_OUTBOX, msgpath);
         return path;
     }
 }

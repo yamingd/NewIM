@@ -54,17 +54,24 @@ public class MessageExchangeHandler extends SimpleChannelInboundHandler<byte[]> 
             return;
         }
 
-        byte[] bytes = chatMessageService.getBytes(message.messageId);
         int total = 0;
-        for (Integer cid : message.channelIds){
-            Channel c = ChannelsHolder.get(cid);
-            if (c != null){
-                ChannelsHolder.ack(logger, c, bytes, message.chatPath);
-                total ++;
-            }else{
-                GatewayServerNode.current.remConnection(c, message.chatPath);
+        byte[] bytes = chatMessageService.getBytes(message.messageId);
+        if (bytes == null){
+            //JOIN, QUIT
+        }else {
+            for (Integer cid : message.channelIds) {
+                Channel c = ChannelsHolder.get(cid);
+                if (c != null) {
+                    ChannelsHolder.ack(logger, c, bytes, message.chatPath);
+                    total++;
+                } else {
+                    GatewayServerNode.current.remConnection(message.chatPath, cid);
+                }
             }
         }
+
+        //TODO:分布式协同是否发完
+        //GatewayServerNode.current.outMessage(message.msgPath);
 
         ack(ctx.channel(), total + "");
     }

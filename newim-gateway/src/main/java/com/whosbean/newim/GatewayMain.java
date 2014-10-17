@@ -1,5 +1,6 @@
-package com.whosbean.newim.gateway;
+package com.whosbean.newim;
 
+import com.whosbean.newim.gateway.GatewayConfig;
 import com.whosbean.newim.gateway.exchange.MessageExchangeHandler;
 import com.whosbean.newim.gateway.handler.HttpSessionHandler;
 import com.whosbean.newim.gateway.handler.WsConnectedHandler;
@@ -24,7 +25,7 @@ import java.util.Map;
 /**
  * Created by yaming_deng on 14-9-9.
  */
-public class Main implements ServerStarter {
+public class GatewayMain implements ServerStarter {
 
     public class WebsocketServerThread extends Thread{
 
@@ -145,7 +146,7 @@ public class Main implements ServerStarter {
      * @param args
      */
     public static void main(String[] args) {
-        new Main().start();
+        new GatewayMain().start();
     }
 
 }

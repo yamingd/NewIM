@@ -1,5 +1,6 @@
-package com.whosbean.newim.chatter;
+package com.whosbean.newim;
 
+import com.whosbean.newim.chatter.ChatterConfig;
 import com.whosbean.newim.server.ServerStarter;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.Assert;
@@ -7,15 +8,19 @@ import org.springframework.util.Assert;
 /**
  * Created by yaming_deng on 14-9-9.
  */
-public class Main implements ServerStarter {
-
-    private static int port = 8080;
+public class ChatterMain implements ServerStarter {
 
     public class ServerThread extends Thread {
 
         @Override
         public void run() {
-
+            while (true){
+                try {
+                    Thread.sleep(600 * 1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -26,6 +31,7 @@ public class Main implements ServerStarter {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("spring-chatter.xml");
         ChatterConfig prop = context.getBean("chatterConfig", ChatterConfig.class);
         Assert.notNull(prop, "chatterConfig bean is NULL.");
+        new ServerThread().start();
         System.out.println("Chatter Node start.");
     }
 
@@ -35,6 +41,6 @@ public class Main implements ServerStarter {
      * @param args
      */
     public static void main(String[] args) {
-        new Main().start();
+        new ChatterMain().start();
     }
 }

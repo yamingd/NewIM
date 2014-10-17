@@ -41,6 +41,7 @@ public abstract class ServerNode implements InitializingBean, DisposableBean {
     @Override
     public void destroy() throws Exception {
         if (client != null){
+            client.delete().forPath(this.getZkPath());
             client.close();
         }
     }
@@ -58,19 +59,22 @@ public abstract class ServerNode implements InitializingBean, DisposableBean {
 
     protected void registryAtZookeeper() throws Exception {
         //ip+":"+port
-        String path = ZKPaths.getServerPath(this.getRole(), this.getName());
+        String path = getZkPath();
         try {
+            byte[] data = this.getConf().getBytes("UTF-8");
             Stat stat = client.checkExists().forPath(path);
-            if (stat != null) {
-                logger.info("***** node [" + path + "] existed!");
-            }else {
-                byte[] data = this.getConf().getBytes("UTF-8");
-                client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path, data);
+            if (stat != null){
+                client.delete().forPath(path);
             }
+            client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).inBackground().forPath(path, data);
         } catch (Exception e) {
             logger.error("registryAtZookeeper Error. sig=" + this.getName(), e);
             throw e;
         }
+    }
+
+    private String getZkPath() {
+        return ZKPaths.getServerPath(this.getRole(), this.getName());
     }
 
     public List<String> getServers(String role) throws Exception {

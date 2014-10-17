@@ -58,7 +58,7 @@ public class WsMessageHandler extends SimpleChannelInboundHandler<WebSocketFrame
      */
     protected void configureClient(ChannelHandlerContext ctx) {
         ChannelsHolder.add(ctx.channel());
-        System.out.println("Checking auth");
+        logger.info("configureClient. to Check auth");
     }
 
     /**
@@ -68,20 +68,25 @@ public class WsMessageHandler extends SimpleChannelInboundHandler<WebSocketFrame
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception
     {
+        logger.info("GOT. " + frame);
         if (frame instanceof TextWebSocketFrame){
             TextWebSocketFrame text = (TextWebSocketFrame)frame;
-            System.out.println(text.text());
+            logger.info(text.text());
             ChannelFuture future = ctx.channel().writeAndFlush(new TextWebSocketFrame(text.text()));
             future.addListener(new GenericFutureListener<Future<Void>>() {
                 @Override
                 public void operationComplete(Future<Void> future) throws Exception {
-                    System.out.println("write to channels successful");
+                    logger.info("write to channels successful");
                 }
             });
 
         }else if(frame instanceof BinaryWebSocketFrame){
             BinaryWebSocketFrame b = (BinaryWebSocketFrame)frame;
-            this.handleMessage(ctx, b.content());
+            try {
+                this.handleMessage(ctx, b.content());
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
         }
     }
 
@@ -97,11 +102,15 @@ public class WsMessageHandler extends SimpleChannelInboundHandler<WebSocketFrame
         int value = chatMessage.op.intValue();
         if (value == ChatMessage.OP_JOIN){
             GatewayServerNode.current.join(ctx.channel(), chatMessage);
+            this.chatMessageService.save(chatMessage);
+            GatewayServerNode.current.newMessage(chatMessage);
         }else if (value == ChatMessage.OP_QUIT){
             GatewayServerNode.current.quit(ctx.channel(), chatMessage);
+            this.chatMessageService.save(chatMessage);
+            GatewayServerNode.current.newMessage(chatMessage);
         }else if (value == ChatMessage.OP_CHAT){
             this.chatMessageService.save(chatMessage);
-            GatewayServerNode.current.newMessage(ctx.channel(), chatMessage);
+            GatewayServerNode.current.newMessage(chatMessage);
         }
     }
 }

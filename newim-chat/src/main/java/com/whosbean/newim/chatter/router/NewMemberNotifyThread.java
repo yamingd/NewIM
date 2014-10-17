@@ -30,7 +30,7 @@ public class NewMemberNotifyThread implements Runnable {
 
     @Override
     public void run() {
-        String path = String.format("%s/%s/members/%s", ZKPaths.NS_ROOT, ZKPaths.PATH_CHATS, boxid);
+        String path = ZKPaths.getMemberPath(boxid);
         String msgId = this.data[this.data.length-1];
         try {
             List<String> members = this.routerServerNode.getZkClient().getChildren().forPath(path);

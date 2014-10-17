@@ -3,6 +3,9 @@ package com.whosbean.newim.server;
 import com.whosbean.newim.entity.ChatMessage;
 import com.whosbean.newim.zookeeper.ZKPaths;
 import io.netty.channel.Channel;
+import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.data.Stat;
 
 import java.util.List;
 
@@ -13,52 +16,79 @@ public class ChatServerNode extends ServerNode {
 
     /**
      * 写入新消息到Zookeeper. Router会得到通知，并读取消息，路由给多个客户端.
-     * @param channel
      * @param chatMessage
      * @throws Exception
      */
-    public void newMessage(final Channel channel, final ChatMessage chatMessage) throws Exception {
+    public void newMessage(final ChatMessage chatMessage) throws Exception {
         //notify exchange a new-added message
         if (this.client == null){
             logger.error("Zookeeper Client is Lost");
             return;
         }
-        String path = ZKPaths.getMessagePath(chatMessage.id, chatMessage.uuid);
-        String data = "NM"+"\n"+chatMessage.uuid;
-        this.client.create().forPath(path, data.getBytes("UTF-8"));
+
+        String path = ZKPaths.getInboxPath(chatMessage.id);
+        Stat stat = this.client.checkExists().forPath(path);
+        if (stat == null){
+            this.client.create().creatingParentsIfNeeded()
+                    .withMode(CreateMode.PERSISTENT).forPath(path);
+        }
+
+        String data = chatMessage.uuid;
+        if (logger.isDebugEnabled()){
+            logger.debug("newMessage. path={}", path);
+        }
+        if (data == null){
+            data = "NULL";
+        }
+        path = path + "/" + chatMessage.id + "-";
+        this.client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT_SEQUENTIAL)
+                .inBackground().forPath(path, data.getBytes("UTF-8"));
     }
 
-    /**
-     * 当Router路由成功消息后. 会把消息删除.
-     * @param channel
-     * @param msgPath
-     * @throws Exception
-     */
-    public void remMessage(final Channel channel, final String msgPath) throws Exception {
+    public void outMessage(final String msgPath) throws Exception {
         //notify exchange a new-added message
         if (this.client == null){
             logger.error("Zookeeper Client is Lost");
             return;
         }
-        String path = ZKPaths.getMessagePath(msgPath);
-        this.client.delete().forPath(path);
+        if (logger.isDebugEnabled()){
+            logger.debug("outMessage. path=" + msgPath);
+        }
+        byte[] data;
+        try {
+            data = this.client.getData().forPath(msgPath);
+        } catch (KeeperException e) {
+            if (e.code().equals(KeeperException.Code.NONODE)){
+                this.delete(msgPath);
+                return;
+            }else{
+                throw e;
+            }
+        }
+        String path1 = msgPath.replace("/inbox/", "/outbox/");
+
+        this.client.create().creatingParentsIfNeeded()
+                .withMode(CreateMode.PERSISTENT).forPath(path1, data);
+        this.delete(msgPath);
     }
 
     /**
      * 当客户端断开连接后，把链接从chat room中移除.
-     * @param channel
      * @param chatPath
      * @throws Exception
      */
-    public void remConnection(final Channel channel, String chatPath) throws Exception {
+    public void remConnection(String chatPath, Integer channelId) throws Exception {
         //lost a connection
         //a member quit from a chat
         if (this.client == null){
             logger.error("Zookeeper Client is Lost");
             return;
         }
-        String path = ZKPaths.getMemberPath(chatPath, channel.hashCode());
-        this.client.delete().forPath(path);
+        String path = ZKPaths.getMemberPath(chatPath, channelId);
+        if (logger.isDebugEnabled()){
+            logger.debug("remConnection. path=" + path);
+        }
+        this.delete(path);
     }
 
     /**
@@ -74,8 +104,12 @@ public class ChatServerNode extends ServerNode {
             return;
         }
         String path = ZKPaths.getMemberPath(chatbox.id, this.getName(), channel.hashCode());
-        String data = "NJ"+"\n"+chatbox.uuid;
-        this.client.create().forPath(path, data.getBytes("UTF-8"));
+        if (logger.isDebugEnabled()){
+            logger.debug("join. path={}", path);
+        }
+        String data = chatbox.sender;
+        this.client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).inBackground().forPath(path, data.getBytes("UTF-8"));
+        chatbox.assignUuid();
     }
 
     public List<String> getMembers(final String boxid) throws Exception {
@@ -84,6 +118,9 @@ public class ChatServerNode extends ServerNode {
             return null;
         }
         String path = ZKPaths.getMemberPath(boxid);
+        if (logger.isDebugEnabled()){
+            logger.debug("getMembers. path={}", path);
+        }
         List<String> list = this.client.getChildren().forPath(path);
         return list;
     }
@@ -101,7 +138,25 @@ public class ChatServerNode extends ServerNode {
             return;
         }
         String path = ZKPaths.getMemberPath(chatbox.id, this.getName(), channel.hashCode());
-        this.client.delete().forPath(path);
+        if (logger.isDebugEnabled()){
+            logger.debug("quit. path={}", path);
+        }
+        chatbox.assignUuid();
+        this.delete(path);
+    }
+
+    public void delete(String path){
+        try {
+            this.client.delete().inBackground().forPath(path);
+        }catch (KeeperException e){
+            if (e.code().equals(KeeperException.Code.NONODE)){
+
+            }else{
+                logger.error(e.getMessage(), e);
+            }
+        }catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
 }

@@ -3,6 +3,7 @@ package com.whosbean.newim.gateway.handler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.util.CharsetUtil;
@@ -29,14 +30,12 @@ public class WsConnectedHandler extends SimpleChannelInboundHandler<FullHttpRequ
     {
         String uri = req.getUri();
         // add websocket handler for the request uri where app lives
-        ctx.pipeline().addLast(new WsServerProtocolHandler(uri));
-
+        ChannelPipeline pipeline = ctx.pipeline();
+        pipeline.addLast(new WsServerProtocolHandler(uri));
         // now add our application handler
-        ctx.pipeline().addLast(new WsMessageHandler());
-
+        pipeline.addLast(new WsMessageHandler());
         // remConnection, app is attached and websocket handler in place
-        ctx.pipeline().remove(this);
-
+        pipeline.remove(this);
         // pass the request on
         ctx.fireChannelRead(req);
     }
@@ -44,5 +43,6 @@ public class WsConnectedHandler extends SimpleChannelInboundHandler<FullHttpRequ
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
+        logger.info("WsConnection inactive.");
     }
 }

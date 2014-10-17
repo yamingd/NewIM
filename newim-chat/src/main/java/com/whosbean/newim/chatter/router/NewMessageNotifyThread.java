@@ -9,6 +9,7 @@ import com.whosbean.newim.zookeeper.ZKPaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -20,37 +21,45 @@ public class NewMessageNotifyThread implements Runnable {
 
     private RouterServerNode routerServerNode;
     private String boxid;
-    private String[] data;
+    private String seqid;
 
-    public NewMessageNotifyThread(RouterServerNode routerServerNode, String boxid, String[] data) {
+
+    public NewMessageNotifyThread(RouterServerNode routerServerNode, String boxid, String seqid) {
         this.routerServerNode = routerServerNode;
         this.boxid = boxid;
-        this.data = data;
+        this.seqid = seqid;
     }
 
     @Override
     public void run() {
-        String path = String.format("%s/%s/members/%s", ZKPaths.NS_ROOT, ZKPaths.PATH_CHATS, boxid);
-        String msgId = this.data[this.data.length-1];
+        String msgpath = ZKPaths.getInboxPath(boxid, seqid);
+        String path = ZKPaths.getMemberPath(boxid);
         try {
+            String msgid = this.getData(msgpath);
             List<String> members = this.routerServerNode.getZkClient().getChildren().forPath(path);
             //TODO:too many members then split
             ExchangeMessage message = new ExchangeMessage();
             message.chatRoomId = this.boxid;
+            message.msgPath = msgpath;
             for(String host : members){
                 ExchangeClient client = ExchangeClientManager.instance.find(host);
-                message.messageId = msgId;
+                message.messageId = msgid;
                 message.channelIds = Lists.newArrayList();
                 List<String> channels = this.routerServerNode.getZkClient().getChildren().forPath(path + "/" + host);
                 for(String cid : channels){
                     message.channelIds.add(new Integer(cid));
                 }
-                message.chatPath = path + "/" + host;
+                message.chatPath = boxid + "/" + host;
                 logger.info("ExchangeClient send message. " + message);
                 client.send(message);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public String getData(String path) throws Exception {
+        byte[] bytes = routerServerNode.getZkClient().getData().forPath(path);
+        return new String(bytes, Charset.forName("utf-8"));
     }
 }

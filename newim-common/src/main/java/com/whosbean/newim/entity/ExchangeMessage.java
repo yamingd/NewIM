@@ -33,6 +33,8 @@ public class ExchangeMessage implements Serializable {
      */
     public String chatRoomId;
 
+    public String msgPath;
+
     public ExchangeMessage() {
         channelIds = Lists.newArrayList();
     }

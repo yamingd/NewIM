@@ -66,6 +66,15 @@ public class ChannelsHolder {
     }
 
     public static void ack(final Logger logger, final Channel ctx, byte[] bytes, final String chatPath) {
+        if (ctx == null){
+            logger.error("argument ctx is NULL. ");
+            return;
+        }
+        if (bytes == null || bytes.length == 0){
+            logger.error("argument bytes is NULL or size=0");
+            return;
+        }
+
         final ByteBuf data = ctx.alloc().buffer(bytes.length); // (2)
         data.writeBytes(bytes);
         final ChannelFuture cf = ctx.writeAndFlush(data);
@@ -75,7 +84,7 @@ public class ChannelsHolder {
                 if(future.cause() != null){
                     if (chatPath != null){
                         //remove this client from members.
-                        GatewayServerNode.current.remConnection(ctx, chatPath);
+                        GatewayServerNode.current.remConnection(chatPath, ctx.hashCode());
                     }
                     logger.error("发送消息错误. cid=" + ctx.hashCode(), future.cause());
                     remove(ctx);

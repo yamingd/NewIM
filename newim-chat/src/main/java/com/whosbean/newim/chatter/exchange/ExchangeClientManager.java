@@ -63,7 +63,7 @@ public class ExchangeClientManager implements InitializingBean, DisposableBean {
 
         @Override
         public void process(WatchedEvent event) throws Exception {
-            System.out.println(event.getType());
+            logger.info("process Event: {}", event);
             if(event.getType() == Watcher.Event.EventType.NodeDataChanged){
                 byte[] data = null;
                 System.out.println(path+":"+new String(data, Charset.forName("utf-8")));
@@ -98,10 +98,11 @@ public class ExchangeClientManager implements InitializingBean, DisposableBean {
             Stat stat = null;
             while (stat == null){
                 try {
+                    String path = ZKPaths.NS_ROOT + ZKPaths.PATH_SERVERS;
                     stat = routerServerNode.getZkClient()
                             .checkExists()
-                            .usingWatcher(new ServerNodeWatcher(ZKPaths.PATH_SERVERS))
-                            .forPath(ZKPaths.PATH_SERVERS);
+                            .usingWatcher(new ServerNodeWatcher(path))
+                            .forPath(path);
                     if (stat != null){
                         List<String> list = routerServerNode.getExchangeServer();
                         for (String host : list){
@@ -110,7 +111,7 @@ public class ExchangeClientManager implements InitializingBean, DisposableBean {
                         servers.addAll(list);
                         break;
                     }else{
-                        logger.info("wait for path. " + ZKPaths.PATH_SERVERS);
+                        logger.info("wait for path. " + path);
                         Thread.sleep(1 * 1000);
                     }
                 } catch (Exception e) {
@@ -124,6 +125,7 @@ public class ExchangeClientManager implements InitializingBean, DisposableBean {
         String[] temp = host.split(":");
         ExchangeClient client = new ExchangeClient(temp[0], Integer.parseInt(temp[1]));
         client.start();
+        logger.info("newExchangeClient. host=" + host);
         this.clients.put(host, client);
     }
 

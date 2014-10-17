@@ -4,9 +4,10 @@ import com.whosbean.newim.chatter.RouterServerNode;
 import com.whosbean.newim.chatter.exchange.ExchangeClientManager;
 import com.whosbean.newim.zookeeper.ZKPaths;
 import org.apache.curator.framework.api.CuratorWatcher;
+import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -16,6 +17,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.Charset;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Yaming on 2014/10/14.
@@ -25,6 +28,8 @@ public class ChatMessageListener implements InitializingBean, DisposableBean {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    public static ChatMessageListener current;
+
     @Autowired
     private RouterServerNode routerServerNode;
 
@@ -32,6 +37,7 @@ public class ChatMessageListener implements InitializingBean, DisposableBean {
     private ExchangeClientManager exchangeClientManager;
 
     private ThreadPoolTaskExecutor executors = null;
+    private ConcurrentHashMap<String, Integer> boxMap = new ConcurrentHashMap<String, Integer>();
 
     private volatile boolean stopped = false;
 
@@ -48,7 +54,8 @@ public class ChatMessageListener implements InitializingBean, DisposableBean {
         executors.setMaxPoolSize(limit);
         executors.setWaitForTasksToCompleteOnShutdown(true);
         executors.afterPropertiesSet();
-        new ListenThread().start();
+        new ChatListenThread().start();
+        current = this;
         logger.info("ChatMessageListner start.");
     }
 
@@ -57,7 +64,12 @@ public class ChatMessageListener implements InitializingBean, DisposableBean {
         return new String(bytes, Charset.forName("utf-8"));
     }
 
-    public class ServerNodeWatcher implements CuratorWatcher {
+    public void remove(String boxid){
+        boxMap.remove(boxid);
+        logger.info("Box Listener quit. " + boxid);
+    }
+
+    public class NewMemberWatcher implements CuratorWatcher {
 
         private final String path;
 
@@ -65,56 +77,71 @@ public class ChatMessageListener implements InitializingBean, DisposableBean {
             return path;
         }
 
-        public ServerNodeWatcher(String path) {
+        public NewMemberWatcher(String path) {
             this.path = path;
         }
 
         @Override
         public void process(WatchedEvent event) throws Exception {
-            logger.info("Event: {}", event.getType());
+            logger.info("process Event: {}", event);
             if(event.getType() == Watcher.Event.EventType.NodeDataChanged){
                 String data = getData(event.getPath());
                 logger.info(path + ":" + data);
             }else if(event.getType() == Watcher.Event.EventType.NodeChildrenChanged){
-                String changedPath = event.getPath().replace(ZKPaths.NS_ROOT, "").replace(this.path, "");
-                logger.info("Changed Path: {}", changedPath);
-                String[] temp = changedPath.split("/");
-                String chatBoxId = temp[temp.length-2];
-                String data = getData(event.getPath());
-                temp = data.split("\n");
-                logger.info("Message: {}, {}", chatBoxId, data);
-                if (temp[0].equalsIgnoreCase("NJ")){
-                    executors.submit(new NewMemberNotifyThread(routerServerNode, chatBoxId, temp));
-                }else if(temp[0].equalsIgnoreCase("NM")){
-                    executors.submit(new NewMessageNotifyThread(routerServerNode, chatBoxId, temp));
+                List<String> childs = routerServerNode.getZkClient().getChildren().forPath(path);
+                for(String boxid : childs){
+                    if (!boxMap.contains(boxid)){
+                        boxMap.put(boxid, 1);
+                        new BoxMsgListenThread(executors, boxid).start();
+                    }
                 }
             }
         }
 
     }
 
-    public class ListenThread extends Thread{
+    public class ChatListenThread extends Thread{
 
         @Override
         public void run() {
-            Stat stat = null;
-            while (stat == null){
+            String path = ZKPaths.NS_ROOT + ZKPaths.PATH_CHATS;
+            List<String> childs = null;
+            while (childs == null){
                 try {
-                    stat = routerServerNode.getZkClient()
-                            .checkExists()
-                            .usingWatcher(new ServerNodeWatcher(ZKPaths.PATH_CHATS))
-                            .forPath(ZKPaths.PATH_CHATS);
-                    if (stat != null){
-                        logger.info("Found path. " + ZKPaths.PATH_CHATS);
+                    childs = routerServerNode.getZkClient()
+                            .getChildren()
+                            .usingWatcher(new NewMemberWatcher(path))
+                            .forPath(path);
+                    if (childs != null){
+                        logger.info("Found path. {}, size {}", path, childs.size());
+                        if (childs.size() > 0){
+                            //start boxMessageListen
+                            for(String boxid : childs){
+                                boxMap.put(boxid, 1);
+                                new BoxMsgListenThread(executors, boxid).start();
+                            }
+                        }
                         break;
                     }else{
-                        logger.info("Wait for path. " + ZKPaths.PATH_CHATS);
+                        logger.info("Wait for path. " + path);
                         Thread.sleep(1 * 1000);
                     }
                 } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
+                    if (e instanceof KeeperException){
+                        KeeperException ex = (KeeperException)e;
+                        if (ex.code().equals(KeeperException.Code.NONODE)){
+                            try {
+                                routerServerNode.getZkClient().create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(path);
+                            } catch (Exception e1) {
+                                logger.error(e1.getMessage(), e1);
+                            }
+                        }
+                    }else {
+                        logger.error(e.getMessage(), e);
+                    }
                 }
             }
         }
     }
+
 }

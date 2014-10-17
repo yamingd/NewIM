@@ -9,6 +9,13 @@ import java.util.UUID;
  */
 @Message
 public class ChatMessage extends Chatbox {
+
+    public static final int TYPE_TEXT = 0;
+    public static final int TYPE_IMAGE = 1;
+    public static final int TYPE_VIDEO = 2;
+    public static final int TYPE_AUDIO = 3;
+    public static final int TYPE_FILE = 4;
+
     /**
      * 消息id
      */
@@ -30,9 +37,14 @@ public class ChatMessage extends Chatbox {
      */
     public String body;
 
-    public void assignUuid(){
+    public ChatMessage assignUuid(){
         this.uuid = UUID.randomUUID().toString();
         this.uuid = this.uuid.replace("-", "");
+        return this;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new ChatMessage().assignUuid().uuid);
     }
 
 }
