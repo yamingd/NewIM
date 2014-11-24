@@ -43,6 +43,17 @@ public class ChatMessage extends Chatbox {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return "ChatMessage{" +
+                "uuid='" + uuid + '\'' +
+                ", sender='" + sender + '\'' +
+                ", receiver='" + receiver + '\'' +
+                ", type=" + type +
+                ", body='" + body + '\'' +
+                '}';
+    }
+
     public static void main(String[] args) {
         System.out.println(new ChatMessage().assignUuid().uuid);
     }

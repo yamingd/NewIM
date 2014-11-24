@@ -83,7 +83,7 @@ public class ChatClient extends Thread {
         if (countDownLatch != null){
             countDownLatch.await();
         }
-        logger.info("to send message. msgid=" + chatMessage.uuid);
+        logger.info("to send message. msg=" + chatMessage);
         chatMessage.op = Chatbox.OP_CHAT;
         byte[] data = MessageUtil.asBytes(chatMessage);
         connection.sendMessage(data);
@@ -96,6 +96,9 @@ public class ChatClient extends Thread {
             connect();
 
             logger.info("websocket connected.");
+            while (true){
+               Thread.sleep(1000);
+            }
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -111,7 +114,7 @@ public class ChatClient extends Thread {
 
         @Override
         public void onMessage(byte[] message) {
-            logger.info("onMessage: " + message);
+            logger.info("onMessage: {}", message);
         }
 
         @Override
@@ -121,12 +124,12 @@ public class ChatClient extends Thread {
             countDownLatch = null;
             //byte[] message = null;
             //websocket.sendMessage(message);
-            logger.info("onOpen: ");
+            logger.info("onOpen: {}", websocket);
         }
 
         @Override
         public void onClose(WebSocket websocket) {
-            logger.info("onClose: ");
+            logger.info("onClose: {}", websocket);
             lostConnection();
         }
 

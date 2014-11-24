@@ -6,6 +6,7 @@ import com.whosbean.newim.gateway.GatewayServerNode;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.slf4j.Logger;
@@ -55,6 +56,9 @@ public class ChannelsHolder {
 
     public static void ack(final Logger logger, final Channel ctx, String msg) {
         //回复客户端.
+        if (logger.isDebugEnabled()){
+            logger.debug("ack: {}/{}", msg, ctx);
+        }
         byte[] bytes = msg.getBytes();
         ack(logger, ctx, bytes, null);
     }
@@ -77,7 +81,7 @@ public class ChannelsHolder {
 
         final ByteBuf data = ctx.alloc().buffer(bytes.length); // (2)
         data.writeBytes(bytes);
-        final ChannelFuture cf = ctx.writeAndFlush(data);
+        final ChannelFuture cf = ctx.writeAndFlush(new BinaryWebSocketFrame(data));
         cf.addListener(new GenericFutureListener<Future<Void>>() {
             @Override
             public void operationComplete(Future<Void> future) throws Exception {
@@ -86,9 +90,13 @@ public class ChannelsHolder {
                         //remove this client from members.
                         GatewayServerNode.current.remConnection(chatPath, ctx.hashCode());
                     }
-                    logger.error("发送消息错误. cid=" + ctx.hashCode(), future.cause());
+                    logger.error("发送消息错误. ctx=" + ctx, future.cause());
                     remove(ctx);
                     ctx.close();
+                }else{
+                    if (logger.isDebugEnabled()){
+                        logger.debug("发送消息成功. ctx={}, chat={}", ctx, chatPath);
+                    }
                 }
             }
         });

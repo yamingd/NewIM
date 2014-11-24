@@ -39,8 +39,9 @@ public class App
 
         cc0.send(message);
 
-        Thread.sleep(60 * 1000);
+        Thread.sleep(30 * 1000);
 
+        System.out.println("DONE OK.");
     }
 
 

@@ -45,7 +45,7 @@
                 <version>2.2-beta-5</version>
                 <configuration>
                     <descriptors>
-                        <descriptor>src/main/assembly/server.xml</descriptor>
+                        <descriptor>src/main/assembly/chatter.xml</descriptor>
                     </descriptors>
                     <!--
                     <descriptorRefs>

@@ -57,8 +57,8 @@ public class WsMessageHandler extends SimpleChannelInboundHandler<WebSocketFrame
      * configure this client for communication with the application.
      */
     protected void configureClient(ChannelHandlerContext ctx) {
+        logger.info("configureClient. to Check auth. ctx={}", ctx.channel());
         ChannelsHolder.add(ctx.channel());
-        logger.info("configureClient. to Check auth");
     }
 
     /**
@@ -112,5 +112,7 @@ public class WsMessageHandler extends SimpleChannelInboundHandler<WebSocketFrame
             this.chatMessageService.save(chatMessage);
             GatewayServerNode.current.newMessage(chatMessage);
         }
+
+        ChannelsHolder.ack(logger, ctx.channel(), chatMessage);
     }
 }

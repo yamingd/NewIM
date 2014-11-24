@@ -24,4 +24,13 @@ public class Chatbox {
      * 聊天室操作代号
      */
     public Integer op;
+
+    @Override
+    public String toString() {
+        return "Chatbox{" +
+                "id='" + id + '\'' +
+                ", group=" + group +
+                ", op=" + op +
+                '}';
+    }
 }
