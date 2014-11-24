@@ -29,8 +29,10 @@ public class HttpSessionHandler extends SimpleChannelInboundHandler<FullHttpRequ
         if (req.headers().contains("Cookie")) {
             String cookie = req.headers().get("Cookie");
             System.out.println("Got Cookie: " + cookie);
-            String uid = cookie;
-            ctx.channel().attr(ChannelAttributes.SESSIOON_ATTR_KEY).set(new WebSession(uid));
+            if (cookie != null) {
+                String[] uid = cookie.split("=");
+                ctx.channel().attr(ChannelAttributes.SESSIOON_ATTR_KEY).set(new WebSession(uid[1]));
+            }
         } else {
             System.out.println("No Cookie in websocket request");
         }

@@ -17,6 +17,7 @@ import io.netty.handler.codec.bytes.ByteArrayEncoder;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.codec.http.websocketx.WebSocket13FrameEncoder;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.Assert;
 
@@ -75,9 +76,10 @@ public class GatewayMain implements ServerStarter {
                             ch.pipeline().addLast(
                                     new HttpRequestDecoder(),
                                     new HttpObjectAggregator(65536),
-                                    new HttpResponseEncoder(),
                                     new HttpSessionHandler(),
-                                    new WsConnectedHandler()
+                                    new WsConnectedHandler(),
+                                    new HttpResponseEncoder(),
+                                    new WebSocket13FrameEncoder(false)
                             );
                         }
                     });

@@ -114,7 +114,12 @@ public class ChatClient extends Thread {
 
         @Override
         public void onMessage(byte[] message) {
-            logger.info("onMessage: {}", message);
+            try {
+                ChatMessage chatMessage = MessageUtil.asT(ChatMessage.class, message);
+                logger.info("onMessage: {}", chatMessage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override

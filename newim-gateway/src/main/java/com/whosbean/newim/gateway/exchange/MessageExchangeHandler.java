@@ -1,5 +1,6 @@
 package com.whosbean.newim.gateway.exchange;
 
+import com.google.common.base.Charsets;
 import com.whosbean.newim.common.MessageUtil;
 import com.whosbean.newim.entity.ExchangeMessage;
 import com.whosbean.newim.gateway.GatewayConfig;
@@ -7,9 +8,14 @@ import com.whosbean.newim.gateway.GatewayServerNode;
 import com.whosbean.newim.gateway.connection.ChannelsHolder;
 import com.whosbean.newim.service.ChatMessageService;
 import com.whosbean.newim.service.ChatMessageServiceFactory;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +83,21 @@ public class MessageExchangeHandler extends SimpleChannelInboundHandler<byte[]> 
     }
 
     private void ack(final Channel ctx, String msg) {
-        ChannelsHolder.ack(logger, ctx, msg);
+        final ByteBuf data = Unpooled.copiedBuffer(msg.getBytes(Charsets.UTF_8));
+        final ChannelFuture cf = ctx.writeAndFlush(data);
+        cf.addListener(new GenericFutureListener<Future<Void>>() {
+            @Override
+            public void operationComplete(Future<Void> future) throws Exception {
+                if (future.cause() != null) {
+                    logger.error("发送消息错误. ctx=" + ctx, future.cause());
+                    ctx.close();
+                } else {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("发送消息成功. ctx={}", ctx);
+                    }
+                }
+            }
+        });
     }
 
     /**

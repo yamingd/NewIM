@@ -4,6 +4,7 @@ import com.whosbean.newim.common.MessageUtil;
 import com.whosbean.newim.entity.ChatMessage;
 import com.whosbean.newim.gateway.GatewayServerNode;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
@@ -79,8 +80,7 @@ public class ChannelsHolder {
             return;
         }
 
-        final ByteBuf data = ctx.alloc().buffer(bytes.length); // (2)
-        data.writeBytes(bytes);
+        final ByteBuf data = Unpooled.copiedBuffer(bytes);
         final ChannelFuture cf = ctx.writeAndFlush(new BinaryWebSocketFrame(data));
         cf.addListener(new GenericFutureListener<Future<Void>>() {
             @Override
