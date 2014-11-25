@@ -1,6 +1,5 @@
 package com.whosbean.newim.gateway.handler;
 
-import com.whosbean.newim.common.MessageUtil;
 import com.whosbean.newim.entity.ChatMessage;
 import com.whosbean.newim.gateway.GatewayConfig;
 import com.whosbean.newim.gateway.GatewayServerNode;
@@ -96,23 +95,23 @@ public class WsMessageHandler extends SimpleChannelInboundHandler<WebSocketFrame
     }
 
     protected void handleMessage(ChannelHandlerContext ctx, ByteBuf bytes) throws Exception {
-        ChatMessage chatMessage = MessageUtil.asT(ChatMessage.class, bytes);
+        byte[] dd = new byte[bytes.readableBytes()];
+        bytes.readBytes(dd);
         WebSession session = getSession(ctx);
-        chatMessage.sender = session.getUid();
-        int value = chatMessage.op.intValue();
-        if (value == ChatMessage.OP_JOIN){
+        ChatMessage.Builder builder = ChatMessage.newBuilder().mergeFrom(dd);
+        ChatMessage chatMessage = builder.setSender(session.getUid()).build();
+        int value = chatMessage.getOp().getNumber();
+        if (value == ChatMessage.ChatOp.JOIN_VALUE){
+            this.chatMessageService.save(chatMessage);
             GatewayServerNode.current.join(ctx.channel(), chatMessage);
-            this.chatMessageService.save(chatMessage);
             GatewayServerNode.current.newMessage(chatMessage);
-        }else if (value == ChatMessage.OP_QUIT){
+        }else if (value == ChatMessage.ChatOp.QUIT_VALUE){
+            this.chatMessageService.save(chatMessage);
             GatewayServerNode.current.quit(ctx.channel(), chatMessage);
-            this.chatMessageService.save(chatMessage);
             GatewayServerNode.current.newMessage(chatMessage);
-        }else if (value == ChatMessage.OP_CHAT){
+        }else if (value == ChatMessage.ChatOp.CHAT_VALUE){
             this.chatMessageService.save(chatMessage);
             GatewayServerNode.current.newMessage(chatMessage);
         }
-
-        ChannelsHolder.ack(logger, ctx.channel(), chatMessage);
     }
 }

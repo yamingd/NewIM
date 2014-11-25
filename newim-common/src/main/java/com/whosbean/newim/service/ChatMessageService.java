@@ -11,7 +11,7 @@ public interface ChatMessageService {
      *
      * @param message
      */
-    void save(ChatMessage message);
+    void save(final ChatMessage message);
 
     /**
      *

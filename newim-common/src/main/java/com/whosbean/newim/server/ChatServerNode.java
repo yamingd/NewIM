@@ -26,21 +26,24 @@ public class ChatServerNode extends ServerNode {
             return;
         }
 
-        String path = ZKPaths.getInboxPath(chatMessage.id);
+        String path = ZKPaths.getInboxPath(chatMessage.getBoxid());
         Stat stat = this.client.checkExists().forPath(path);
         if (stat == null){
             this.client.create().creatingParentsIfNeeded()
                     .withMode(CreateMode.PERSISTENT).forPath(path);
         }
 
-        String data = chatMessage.uuid;
+        String data = chatMessage.getUuid();
         if (logger.isDebugEnabled()){
-            logger.debug("newMessage. path={}", path);
+            logger.debug("newMessage. path0={}", path);
         }
         if (data == null){
             data = "NULL";
         }
-        path = path + "/" + chatMessage.id + "-";
+        path = path + "/" + chatMessage.getBoxid() + "-";
+        if (logger.isDebugEnabled()){
+            logger.debug("newMessage. path1={}", path);
+        }
         this.client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT_SEQUENTIAL)
                 .inBackground().forPath(path, data.getBytes("UTF-8"));
     }
@@ -94,22 +97,21 @@ public class ChatServerNode extends ServerNode {
     /**
      * 加入chat room
      * @param channel
-     * @param chatbox
+     * @param message
      * @throws Exception
      */
-    public void join(final Channel channel, final ChatMessage chatbox) throws Exception {
+    public void join(final Channel channel, final ChatMessage message) throws Exception {
         //new member join a chat
         if (this.client == null){
             logger.error("Zookeeper Client is Lost");
             return;
         }
-        String path = ZKPaths.getMemberPath(chatbox.id, this.getName(), channel.hashCode());
+        String path = ZKPaths.getMemberPath(message.getBoxid(), this.getName(), channel.hashCode());
         if (logger.isDebugEnabled()){
             logger.debug("join. path={}", path);
         }
-        String data = chatbox.sender;
+        String data = message.getSender();
         this.client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).inBackground().forPath(path, data.getBytes("UTF-8"));
-        chatbox.assignUuid();
     }
 
     public List<String> getMembers(final String boxid) throws Exception {
@@ -128,20 +130,19 @@ public class ChatServerNode extends ServerNode {
     /**
      * 退出chat room
      * @param channel
-     * @param chatbox
+     * @param message
      * @throws Exception
      */
-    public void quit(final Channel channel, final ChatMessage chatbox) throws Exception {
+    public void quit(final Channel channel, final ChatMessage message) throws Exception {
         //a member quit from a chat
         if (this.client == null){
             logger.error("Zookeeper Client is Lost");
             return;
         }
-        String path = ZKPaths.getMemberPath(chatbox.id, this.getName(), channel.hashCode());
+        String path = ZKPaths.getMemberPath(message.getBoxid(), this.getName(), channel.hashCode());
         if (logger.isDebugEnabled()){
             logger.debug("quit. path={}", path);
         }
-        chatbox.assignUuid();
         this.delete(path);
     }
 

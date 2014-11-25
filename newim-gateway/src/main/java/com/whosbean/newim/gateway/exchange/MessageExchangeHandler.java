@@ -1,7 +1,6 @@
 package com.whosbean.newim.gateway.exchange;
 
 import com.google.common.base.Charsets;
-import com.whosbean.newim.common.MessageUtil;
 import com.whosbean.newim.entity.ExchangeMessage;
 import com.whosbean.newim.gateway.GatewayConfig;
 import com.whosbean.newim.gateway.GatewayServerNode;
@@ -18,8 +17,6 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 /**
  * Created by yaming_deng on 14-9-9.
@@ -51,27 +48,19 @@ public class MessageExchangeHandler extends SimpleChannelInboundHandler<byte[]> 
          * 2. send message in async way
          * 3. ack back to
          */
-        ExchangeMessage message = null;
-        try {
-            message = MessageUtil.asT(ExchangeMessage.class, msg);
-        } catch (IOException e) {
-            logger.error("ExchangeMessage解析错误", e);
-            ack(ctx.channel(), "ERR");
-            return;
-        }
-
+        ExchangeMessage message = ExchangeMessage.newBuilder().mergeFrom(msg).build();
         int total = 0;
-        byte[] bytes = chatMessageService.getBytes(message.messageId);
+        byte[] bytes = chatMessageService.getBytes(message.getMessageId());
         if (bytes == null){
             //JOIN, QUIT
         }else {
-            for (Integer cid : message.channelIds) {
+            for (Integer cid : message.getChannelIdList()) {
                 Channel c = ChannelsHolder.get(cid);
                 if (c != null) {
-                    ChannelsHolder.ack(logger, c, bytes, message.chatPath);
+                    ChannelsHolder.ack(logger, c, bytes, message.getChatPath());
                     total++;
                 } else {
-                    GatewayServerNode.current.remConnection(message.chatPath, cid);
+                    GatewayServerNode.current.remConnection(message.getChatPath(), cid);
                 }
             }
         }

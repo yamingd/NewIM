@@ -1,7 +1,5 @@
 package com.whosbean.newim.gateway.connection;
 
-import com.whosbean.newim.common.MessageUtil;
-import com.whosbean.newim.entity.ChatMessage;
 import com.whosbean.newim.gateway.GatewayServerNode;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -12,7 +10,6 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.slf4j.Logger;
 
-import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -61,12 +58,6 @@ public class ChannelsHolder {
             logger.debug("ack: {}/{}", msg, ctx);
         }
         byte[] bytes = msg.getBytes();
-        ack(logger, ctx, bytes, null);
-    }
-
-    public static void ack(final Logger logger, final Channel ctx, ChatMessage msg) throws IOException {
-        //回复客户端.
-        byte[] bytes = MessageUtil.asBytes(msg);
         ack(logger, ctx, bytes, null);
     }
 

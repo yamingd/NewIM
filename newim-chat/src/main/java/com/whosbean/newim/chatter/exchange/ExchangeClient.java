@@ -1,6 +1,5 @@
 package com.whosbean.newim.chatter.exchange;
 
-import com.whosbean.newim.common.MessageUtil;
 import com.whosbean.newim.entity.ExchangeMessage;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -124,8 +123,7 @@ public class ExchangeClient {
             throw new Exception("Exchange Client has been disabled. host=" + host + ":" + port);
         }
 
-        byte[] bytes = MessageUtil.asBytes(message);
-        postSent(message, bytes, 3);
+        postSent(message, message.toByteArray(), 3);
 
     }
 
@@ -145,13 +143,13 @@ public class ExchangeClient {
                         @Override
                         public void operationComplete(Future<Void> future) throws Exception {
                             if (future.cause() != null) {
-                                logger.error("发送消息错误. host=" + host + ":" + port + ", messageId=" + message.messageId, future.cause());
+                                logger.error("发送消息错误. host=" + host + ":" + port + ", messageId=" + message.getMessageId(), future.cause());
                                 c.close();
                                 if (trylimit > 0){
                                     postSent(message, bytes, trylimit - 1);
                                 }
                             }else{
-                                logger.info("发送消息成功. messageId=" + message.messageId);
+                                logger.info("发送消息成功. messageId=" + message.getMessageId());
                             }
                         }
                     });

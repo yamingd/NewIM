@@ -8,7 +8,6 @@ import com.ning.http.client.websocket.WebSocketByteListener;
 import com.ning.http.client.websocket.WebSocketUpgradeHandler;
 import com.whosbean.newim.common.MessageUtil;
 import com.whosbean.newim.entity.ChatMessage;
-import com.whosbean.newim.entity.Chatbox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,13 +55,13 @@ public class ChatClient extends Thread {
             countDownLatch.await();
         }
 
-        ChatMessage chatbox = new ChatMessage();
-        chatbox.id = boxid;
-        chatbox.op = Chatbox.OP_JOIN;
-        chatbox.sender = this.uname;
-
-        byte[] data = MessageUtil.asBytes(chatbox);
-        connection.sendMessage(data);
+        ChatMessage.Builder chatbox = ChatMessage.newBuilder();
+        chatbox.setBoxid(boxid);
+        chatbox.setOp(ChatMessage.ChatOp.JOIN);
+        chatbox.setSender(this.uname);
+        chatbox.setGroup(0);
+        chatbox.setMtype(ChatMessage.MessageType.SYNC);
+        connection.sendMessage(chatbox.build().toByteArray());
     }
 
     public void quit(String boxid) throws Exception {
@@ -70,13 +69,12 @@ public class ChatClient extends Thread {
             countDownLatch.await();
         }
 
-        ChatMessage chatbox = new ChatMessage();
-        chatbox.id = boxid;
-        chatbox.op = Chatbox.OP_QUIT;
-        chatbox.sender = this.uname;
-
-        byte[] data = MessageUtil.asBytes(chatbox);
-        connection.sendMessage(data);
+        ChatMessage.Builder chatbox = ChatMessage.newBuilder();
+        chatbox.setBoxid(boxid);
+        chatbox.setOp(ChatMessage.ChatOp.QUIT);
+        chatbox.setSender(this.uname);
+        chatbox.setMtype(ChatMessage.MessageType.SYNC);
+        connection.sendMessage(chatbox.build().toByteArray());
     }
 
     public void send(ChatMessage chatMessage) throws Exception {
@@ -84,9 +82,7 @@ public class ChatClient extends Thread {
             countDownLatch.await();
         }
         logger.info("to send message. msg=" + chatMessage);
-        chatMessage.op = Chatbox.OP_CHAT;
-        byte[] data = MessageUtil.asBytes(chatMessage);
-        connection.sendMessage(data);
+        connection.sendMessage(chatMessage.toByteArray());
     }
 
     @Override

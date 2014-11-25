@@ -1,6 +1,5 @@
 package com.whosbean.newim.chatter.router;
 
-import com.google.common.collect.Lists;
 import com.whosbean.newim.chatter.RouterServerNode;
 import com.whosbean.newim.chatter.exchange.ExchangeClient;
 import com.whosbean.newim.chatter.exchange.ExchangeClientManager;
@@ -35,19 +34,18 @@ public class NewMemberNotifyThread implements Runnable {
         try {
             List<String> members = this.routerServerNode.getZkClient().getChildren().forPath(path);
             //TODO:too many members then split
-            ExchangeMessage message = new ExchangeMessage();
-            message.chatRoomId = this.boxid;
+            ExchangeMessage.Builder message = ExchangeMessage.newBuilder();
+            message.setChatRoomId(this.boxid);
             for(String host : members){
                 ExchangeClient client = ExchangeClientManager.instance.find(host);
-                message.messageId = msgId;
-                message.channelIds = Lists.newArrayList();
+                message.setMessageId(msgId);
                 List<String> channels = this.routerServerNode.getZkClient().getChildren().forPath(path + "/" + host);
                 for(String cid : channels){
-                    message.channelIds.add(new Integer(cid));
+                    message.addChannelId(new Integer(cid));
                 }
-                message.chatPath = path + "/" + host;
+                message.setChatPath(path + "/" + host);
                 logger.info("ExchangeClient send message. " + message);
-                client.send(message);
+                client.send(message.build());
             }
         } catch (Exception e) {
             e.printStackTrace();

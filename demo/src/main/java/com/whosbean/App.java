@@ -29,15 +29,16 @@ public class App
 
         System.out.println("to send message: " + BOXID);
 
-        ChatMessage message = new ChatMessage();
-        message.id = BOXID;
-        message.body = "Chat Message Body";
-        message.sender = "john-1";
-        message.receiver = "john-2";
-        message.group = 0;
-        message.type = ChatMessage.TYPE_TEXT;
+        ChatMessage.Builder message = ChatMessage.newBuilder();
+        message.setBoxid(BOXID);
+        message.setBody("Chat Message Body");
+        message.setSender("john-1");
+        message.setReceiver("john-2");
+        message.setGroup(0);
+        message.setOp(ChatMessage.ChatOp.CHAT);
+        message.setMtype(ChatMessage.MessageType.SmallText);
 
-        cc0.send(message);
+        cc0.send(message.build());
 
         Thread.sleep(30 * 1000);
 

@@ -1,6 +1,5 @@
 package com.whosbean.newim.redis;
 
-import com.whosbean.newim.common.MessageUtil;
 import com.whosbean.newim.entity.ChatMessage;
 import com.whosbean.newim.service.ChatMessageService;
 import org.slf4j.Logger;
@@ -31,9 +30,11 @@ public class RedisMessageService implements ChatMessageService {
         BinaryShardedJedis jedis =  redisBucket.getResource();
         try {
             long id = jedis.incr(IM_PK);
-            message.uuid = id + "";
+            ChatMessage.Builder builder = ChatMessage.newBuilder(message);
+            builder.setUuid(id + "");
+            message = builder.build();
             byte[] key = (IM_PENDING + id).getBytes();
-            jedis.set(key, MessageUtil.asBytes(message));
+            jedis.set(key, message.toByteArray());
             jedis.expire(key, TTS);
             long total = jedis.incr(IM_PENDING_COUNT);
             redisBucket.returnResource(jedis);
@@ -50,7 +51,7 @@ public class RedisMessageService implements ChatMessageService {
         try {
             byte[] key = (IM_PENDING + uuid).getBytes();
             byte[] data = jedis.get(key);
-            ChatMessage message = MessageUtil.asT(ChatMessage.class, data);
+            ChatMessage message = ChatMessage.newBuilder().mergeFrom(data).build();
             redisBucket.returnResource(jedis);
             return message;
         } catch (Exception e) {
