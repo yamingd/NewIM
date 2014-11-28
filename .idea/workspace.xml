@@ -2,39 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7285c4c4-9e53-49ee-8a02-eb6d0bd3f279" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/newim-pb/src/test/java/com/whosbean/AppTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/newim-pb/src/main/pb/entity_schema.pb.cc" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/newim-pb/src/main/pb/entity_schema.pb.h" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/newim-pb/src/main/pb/entity_schema.proto" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/newim-pb/newim-pb.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/newim-pb/pom.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/newim-pb/src/main/resources/redis.yaml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/newim-pb/src/main/resources/zookeeper.yaml" />
-      <change type="DELETED" beforePath="E:\stuff\NewIM\.idea\libraries\Maven__com_googlecode_json_simple_json_simple_1_1_1.xml" afterPath="" />
-      <change type="DELETED" beforePath="E:\stuff\NewIM\.idea\libraries\Maven__org_javassist_javassist_3_16_1_GA.xml" afterPath="" />
-      <change type="DELETED" beforePath="E:\stuff\NewIM\.idea\libraries\Maven__org_msgpack_msgpack_0_6_8.xml" afterPath="" />
-      <change type="DELETED" beforePath="E:\stuff\NewIM\newim-common\src\main\pb\entity_schema.pb.cc" afterPath="" />
-      <change type="DELETED" beforePath="E:\stuff\NewIM\newim-common\src\main\pb\entity_schema.pb.h" afterPath="" />
-      <change type="DELETED" beforePath="E:\stuff\NewIM\newim-common\src\main\pb\entity_schema.proto" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/NewIM.iml" afterPath="$PROJECT_DIR$/NewIM.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/demo/demo.iml" afterPath="$PROJECT_DIR$/demo/demo.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/newim-chat/newim-chat.iml" afterPath="$PROJECT_DIR$/newim-chat/newim-chat.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/newim-common/newim-common.iml" afterPath="$PROJECT_DIR$/newim-common/newim-common.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/newim-gateway/newim-gateway.iml" afterPath="$PROJECT_DIR$/newim-gateway/newim-gateway.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/newim-common/pom.xml" afterPath="$PROJECT_DIR$/newim-common/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/demo/pom.xml" afterPath="$PROJECT_DIR$/demo/pom.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MOVED" beforePath="E:\stuff\NewIM\newim-common\src\main\java\com\whosbean\newim\entity\ChatMessage.java" afterPath="$PROJECT_DIR$/newim-pb/src/main/java/com/whosbean/newim/entity/ChatMessage.java" />
-      <change type="MOVED" beforePath="E:\stuff\NewIM\newim-common\src\main\java\com\whosbean\newim\entity\ChatMessageOrBuilder.java" afterPath="$PROJECT_DIR$/newim-pb/src/main/java/com/whosbean/newim/entity/ChatMessageOrBuilder.java" />
-      <change type="MOVED" beforePath="E:\stuff\NewIM\newim-common\src\main\java\com\whosbean\newim\entity\ChatStatus.java" afterPath="$PROJECT_DIR$/newim-pb/src/main/java/com/whosbean/newim/entity/ChatStatus.java" />
-      <change type="MOVED" beforePath="E:\stuff\NewIM\newim-common\src\main\java\com\whosbean\newim\entity\ChatStatusOrBuilder.java" afterPath="$PROJECT_DIR$/newim-pb/src/main/java/com/whosbean/newim/entity/ChatStatusOrBuilder.java" />
-      <change type="MOVED" beforePath="E:\stuff\NewIM\newim-common\src\main\java\com\whosbean\newim\entity\EntitySchema.java" afterPath="$PROJECT_DIR$/newim-pb/src/main/java/com/whosbean/newim/entity/EntitySchema.java" />
-      <change type="MOVED" beforePath="E:\stuff\NewIM\newim-common\src\main\java\com\whosbean\newim\entity\ExchangeMessage.java" afterPath="$PROJECT_DIR$/newim-pb/src/main/java/com/whosbean/newim/entity/ExchangeMessage.java" />
-      <change type="MOVED" beforePath="E:\stuff\NewIM\newim-common\src\main\java\com\whosbean\newim\entity\ExchangeMessageOrBuilder.java" afterPath="$PROJECT_DIR$/newim-pb/src/main/java/com/whosbean/newim/entity/ExchangeMessageOrBuilder.java" />
     </list>
     <ignored path="NewIM.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -140,7 +110,6 @@
         <option value="$PROJECT_DIR$/newim-chat/pom.xml" />
         <option value="$PROJECT_DIR$/newim-gateway/src/main/java/com/whosbean/newim/GatewayMain.java" />
         <option value="$PROJECT_DIR$/newim-gateway/src/main/java/com/whosbean/newim/gateway/handler/HttpSessionHandler.java" />
-        <option value="$PROJECT_DIR$/demo/pom.xml" />
         <option value="$PROJECT_DIR$/newim-gateway/src/main/java/com/whosbean/newim/gateway/exchange/MessageExchangeHandler.java" />
         <option value="$PROJECT_DIR$/newim-chat/src/main/java/com/whosbean/newim/chatter/router/NewMemberNotifyThread.java" />
         <option value="$PROJECT_DIR$/newim-chat/src/main/java/com/whosbean/newim/chatter/router/NewMessageNotifyThread.java" />
@@ -160,6 +129,7 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/newim-pb/pom.xml" />
         <option value="$PROJECT_DIR$/newim-common/pom.xml" />
+        <option value="$PROJECT_DIR$/demo/pom.xml" />
       </list>
     </option>
   </component>
@@ -736,7 +706,11 @@
       <created>1417156247741</created>
       <updated>1417156247741</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="clean codes">
+      <created>1417157289747</created>
+      <updated>1417157289747</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -777,10 +751,10 @@
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4056604" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32614556" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19412607" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17406876" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25286534" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21991403" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.51212937" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -973,24 +947,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/demo/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="121" max-vertical-offset="833">
-          <caret line="40" column="21" selection-start-line="40" selection-start-column="21" selection-end-line="40" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/newim-chat/src/main/java/com/whosbean/newim/chatter/router/NewMemberNotifyThread.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="197" max-vertical-offset="884">
           <caret line="37" column="46" selection-start-line="37" selection-start-column="12" selection-end-line="37" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/demo/src/main/java/com/whosbean/App.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5702247" vertical-offset="223" max-vertical-offset="935">
-          <caret line="37" column="47" selection-start-line="37" selection-start-column="47" selection-end-line="37" selection-end-column="47" />
         </state>
       </provider>
     </entry>
@@ -1098,6 +1058,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="398">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1121,6 +1082,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.5379113" vertical-offset="32" max-vertical-offset="731">
           <caret line="24" column="30" selection-start-line="24" selection-start-column="30" selection-end-line="24" selection-end-column="30" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1128,16 +1090,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="712">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/demo/src/main/java/com/whosbean/ChatClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.43490702" vertical-offset="1600" max-vertical-offset="2618">
-          <caret line="112" column="73" selection-start-line="112" selection-start-column="73" selection-end-line="112" selection-end-column="73" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1162,6 +1114,42 @@
         <state vertical-scroll-proportion="0.26752505" vertical-offset="0" max-vertical-offset="2023">
           <caret line="11" column="33" selection-start-line="11" selection-start-column="33" selection-end-line="11" selection-end-column="33" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/newim-pb/src/main/java/com/whosbean/newim/entity/ChatMessage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="119" max-vertical-offset="24055">
+          <caret line="8" column="20" selection-start-line="8" selection-start-column="20" selection-end-line="8" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/demo/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6179775" vertical-offset="121" max-vertical-offset="833">
+          <caret line="33" column="45" selection-start-line="33" selection-start-column="45" selection-end-line="33" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/demo/src/main/java/com/whosbean/App.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6418539" vertical-offset="223" max-vertical-offset="935">
+          <caret line="40" column="34" selection-start-line="40" selection-start-column="34" selection-end-line="40" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/demo/src/main/java/com/whosbean/ChatClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.85955054" vertical-offset="0" max-vertical-offset="2652">
+          <caret line="36" column="5" selection-start-line="36" selection-start-column="5" selection-end-line="36" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#4029#4030#0" expanded="true" />
+            <element signature="e#4081#4082#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
