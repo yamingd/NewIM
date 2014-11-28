@@ -11,7 +11,10 @@
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/newim-core/pom.xml" />
         <option value="$PROJECT_DIR$/newim-group/pom.xml" />
+        <option value="$PROJECT_DIR$/newim-pb/pom.xml" />
+        <option value="$PROJECT_DIR$/newim-protobuf/pom.xml" />
         <option value="$PROJECT_DIR$/newim-user/pom.xml" />
         <option value="$PROJECT_DIR$/newitem-gateway/pom.xml" />
       </set>

@@ -6,7 +6,6 @@ import com.ning.http.client.cookie.Cookie;
 import com.ning.http.client.websocket.WebSocket;
 import com.ning.http.client.websocket.WebSocketByteListener;
 import com.ning.http.client.websocket.WebSocketUpgradeHandler;
-import com.whosbean.newim.common.MessageUtil;
 import com.whosbean.newim.entity.ChatMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,7 +110,7 @@ public class ChatClient extends Thread {
         @Override
         public void onMessage(byte[] message) {
             try {
-                ChatMessage chatMessage = MessageUtil.asT(ChatMessage.class, message);
+                ChatMessage chatMessage = ChatMessage.parseFrom(message);
                 logger.info("onMessage: {}", chatMessage);
             } catch (IOException e) {
                 e.printStackTrace();
