@@ -2,7 +2,7 @@ NewIM
 =====
 
 This is a simple NewIM, created for Mobile App.
-using Netty, Zookeeper and Protobuf
+by using Netty, Zookeeper, Redis and Protobuf
 
 ### Gateway
 this node receives connections from Mobile and holds them, receives message from Mobile and then deliver the message to Chat Node.
@@ -11,6 +11,14 @@ It uses zookeeper to store connection info.
 ### Chat
 this node routes message to all those mobile client in P2P, P2G way.
 it uses Zookeeper to get connections on Gateway node.
+
+### Zookeeper
+it is a No 1 component in NewIM. it can deliver updates to clients in less than a second and support HA.
+so it is a Keeper.
+
+### Redis
+this is where message save when Gateway got those messages.
+
 
 ### Protobuf Definition
 ```
