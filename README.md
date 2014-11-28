@@ -2,7 +2,7 @@ NewIM
 =====
 
 This is a simple NewIM, created for Mobile App.
-by using Netty, Zookeeper, Redis and Protobuf
+by using Netty + WebSocket, Zookeeper, Redis and Protobuf.
 
 ### Gateway
 this node receives connections from Mobile and holds them, receives message from Mobile and then deliver the message to Chat Node.
