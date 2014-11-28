@@ -15,12 +15,12 @@ it uses Zookeeper to get connections on Gateway node.
 ### Protobuf Definition
 ```
 message ChatMessage {
-  required string boxid = 1; # chat roomid
-  required int32 group = 2 [default = 0]; # to mark this room is a group-chat or p2p chat
-  optional string uuid = 3; # message id
+  required string boxid = 1;
+  required int32 group = 2 [default = 0];
+  optional string uuid = 3;
   optional string sender = 4;
   optional string receiver = 5;
-  optional string body = 6; # message content
+  optional string body = 6;
   enum MessageType {
       SmallText = 0;
       LongText = 1;
@@ -41,6 +41,21 @@ message ChatMessage {
   }
   required ChatOp op = 8 [default = ACK];
 }
+
+message ChatStatus {
+  required string sender = 1;
+  required int32 syncMark = 2;
+}
+
+message ExchangeMessage {
+  required string messageId = 1;
+  optional string message = 2;
+  optional string chatPath = 3;
+  optional string chatRoomId = 4;
+  optional string msgPath = 5;
+  repeated int32 channelId = 6;
+}
+
 ```
 
 ### TODO
