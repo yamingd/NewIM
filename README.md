@@ -21,6 +21,9 @@ this is where message save when Gateway got those messages.
 
 
 ### Protobuf Definition
+App talks to Gateway with Protobuf, Gateway sends messages to App with Protobuf.
+Gateway talks to Chat Node with Protobuf.
+
 ```
 message ChatMessage {
   required string boxid = 1;
