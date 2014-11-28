@@ -6,7 +6,7 @@
     <file url="file://$PROJECT_DIR$/newim-chat" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/newim-common" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/newim-gateway" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/newim-protobuf" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/newim-pb" charset="UTF-8" />
   </component>
 </project>
 

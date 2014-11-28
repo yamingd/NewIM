@@ -26,6 +26,7 @@
         <module name="newim-chat" />
         <module name="newim-common" />
         <module name="newim-gateway" />
+        <module name="newim-pb" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
